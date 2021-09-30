@@ -108,6 +108,15 @@ class Table(UserDef):
     def elements(self):
         return self.elements
 
+    def x(self, x):
+        return self.elements[0][0][x]
+    
+    def xy(self, x, y):
+        return self.elements[0][y][x]
+    
+    def xyz(self, x, y, z):
+        return self.elements[z][y][x]
+
     def _dump(self) -> bytes:
 
         # TODO Get this working because RK never did this
