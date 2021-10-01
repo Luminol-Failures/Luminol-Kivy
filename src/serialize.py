@@ -1,5 +1,5 @@
 from re import S
-from rubymarshal.classes import UserDef, ClassRegistry, RubyObject
+from rubymarshal.classes import UserDef, RubyObject, registry
 import rubymarshal.reader as reader
 import rubymarshal.writer as writer
 from typing import Type
@@ -111,11 +111,20 @@ class Table(UserDef):
     def x(self, x):
         return self.elements[0][0][x]
     
+    def set_x(self, x, value):
+        self.elements[0][0][x] = value
+    
     def xy(self, x, y):
         return self.elements[0][y][x]
     
+    def set_xy(self, x, y, value):
+        self.elements[0][y][x] = value
+    
     def xyz(self, x, y, z):
         return self.elements[z][y][x]
+    
+    def set_xyz(self, x, y, z, value):
+        self.elements[z][y][x] = value
 
     def _dump(self) -> bytes:
 
@@ -150,17 +159,17 @@ class Table(UserDef):
     def __str__(self) -> str:
         return self.__repr__()
 
-class RGSSRegistry(ClassRegistry):
-    def __init__(self):
-        self._registry = {
-            'Color': Color,
-            'Tone': Tone,
-            'Table': Table,
-        }
-
-    def get(self, ruby_class_name: str, default_cls: Type[RubyObject]):
-        if default_cls != RubyObject:
-            # we want to throw exceptions for unknown UserDefs and UsrMarshals
-            #default_cls = None
-            pass
-        return self._registry.get(ruby_class_name, default_cls)
+#class RGSSRegistry(ClassRegistry):
+#    def __init__(self):
+#        self._registry = {
+#            'Color': Color,
+#            'Tone': Tone,
+#            'Table': Table,
+#        }
+#
+#    def get(self, ruby_class_name: str, default_cls: Type[RubyObject]):
+#        if default_cls != RubyObject:
+#            # we want to throw exceptions for unknown UserDefs and UsrMarshals
+#            #default_cls = None
+#            pass
+#        return self._registry.get(ruby_class_name, default_cls)
