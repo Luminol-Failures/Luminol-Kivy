@@ -13,6 +13,7 @@ class Tileset(RubyObject):
     ruby_class_name = "RPG::Tileset"
     def __init__(self, ruby_class_name=None, attributes=None):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        # Default values
         if (self.attributes == {}):
             self.attributes = {
                 '@id': 0,
@@ -171,6 +172,7 @@ class Map(RubyObject):
     ruby_class_name = "RPG::Map"
     def __init__(self, ruby_class_name=None, attributes=None, width = 20, height = 20):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        # Default values
         if (self.attributes == {}):
             self.set_attributes({
                 '@tileset_id': 1,
@@ -280,6 +282,7 @@ class Event(RubyObject):
     ruby_class_name = "RPG::Event"
     def __init__(self, ruby_class_name=None, attributes=None, x = None, y = None):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        # Default values
         if (self.attributes == {}):
             self.attributes = {
                 "@id": 0,
@@ -334,6 +337,7 @@ class EventPage(RubyObject):
     ruby_class_name = "RPG::Event::Page"
     def __init__(self, ruby_class_name=None, attributes=None):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        # Default values
         if (self.attributes == {}):
             self.attributes = {
                 '@condition': EventCondition(),
@@ -411,6 +415,7 @@ class EventCondition(RubyObject):
     ruby_class_name = "RPG::Event::Page::Condition"
     def __init__(self, ruby_class_name=None, attributes=None):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        # Default values
         if (self.attributes == {}):
             self.attributes = {
                 '@switch1_valid': False,
@@ -484,6 +489,7 @@ class EventGraphic(RubyObject):
     ruby_class_name = "RPG::Event::Page::Graphic"
     def __init__(self, ruby_class_name=None, attributes=None):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        # Default values
         if (self.attributes == {}):
             self.attributes = {
                 '@tile_id': 0,
@@ -546,6 +552,7 @@ class EventCommand(RubyObject):
     ruby_class_name = "RPG::EventCommand"
     def __init__(self, ruby_class_name=None, attributes=None, code = 0, indent = 0, parameters = []):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        # Default values
         if (self.attributes == {}):
             self.attributes = {
                 '@code': code,
@@ -581,6 +588,7 @@ class MoveRoute(RubyObject):
     ruby_class_name = "RPG:::MoveRoute"
     def __init__(self, ruby_class_name=None, attributes=None):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        # Default values
         if (self.attributes == {}):
             self.attributes = {
                 '@repeat': True,
@@ -616,6 +624,7 @@ class MoveCommand(RubyObject):
     ruby_class_name = "RPG::MoveCommand"
     def __init__(self, ruby_class_name=None, attributes=None, code = 0, parameters = []):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        # Default values
         if (self.attributes == {}):
             self.attributes = {
                 '@code': code,
@@ -642,6 +651,7 @@ class MapInfo(RubyObject):
     ruby_class_name = "RPG::MapInfo"
     def __init__(self, ruby_class_name=None, attributes=None):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        # Default values
         if (self.attributes == {}):
             self.attributes = {
                 '@name': "",
@@ -688,6 +698,7 @@ class AudioFile(RubyObject):
     ruby_class_name = "RPG::AudioFile"
     def __init__(self, ruby_class_name=None, attributes=None, name = "", volume = 100, pitch = 100):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        # Default values
         if (self.attributes == {}):
             self.attributes = {
                 '@name': name,
@@ -718,6 +729,84 @@ class AudioFile(RubyObject):
     @name.setter
     def name(self, value):
         self.attributes['@name'] = value
+
+# TODO Finish these classes to be equivalent with the others
+class Actor(RubyObject):
+    ruby_class_name = "RPG::Actor"
+    def __init__(self, ruby_class_name=None, attributes=None):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        self.attributes['parameters'] = Table()._load(self.attributes['@parameters']._private_data)
+
+class RPGClass(RubyObject):
+    ruby_class_name = "RPG::Class"
+
+class Learning(RubyObject):
+    ruby_class_name = "RPG::Class::Learning"
+    def __init__(self, ruby_class_name=None, attributes=None):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        self.attributes['@element_ranks'] = Table()._load(self.attributes['@element_ranks']._private_data)
+        self.attributes['@state_ranks'] = Table()._load(self.attributes['@state_ranks']._private_data)
+
+class Skill(RubyObject):
+    ruby_class_name = "RPG::Skill"
+
+class Item(RubyObject):
+    ruby_class_name = "RPG::Item"
+
+class Weapon(RubyObject):
+    ruby_class_name = "RPG::Weapon"
+
+class Armor(RubyObject):
+    ruby_class_name = "RPG::Armor"
+
+class Enemy(RubyObject):
+    ruby_class_name = "RPG::Enemy"
+
+class EnemyAction(RubyObject):
+    ruby_class_name = "RPG::Enemy::Action"
+    def __init__(self, ruby_class_name=None, attributes=None):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        self.attributes['@element_ranks'] = Table()._load(self.attributes['@element_ranks']._private_data)
+        self.attributes['@state_ranks'] = Table()._load(self.attributes['@state_ranks']._private_data)
+
+class Troop(RubyObject):
+    ruby_class_name = "RPG::Troop"
+
+class TroopMember(RubyObject):
+    ruby_class_name = "RPG::Troop::Member"
+
+class TroopPage(RubyObject):
+    ruby_class_name = "RPG::Troop::Page"
+
+class TroopPageCondition(RubyObject):
+    ruby_class_name = "RPG::Troop::Page::Condition"
+
+class State(RubyObject):
+    ruby_class_name = "RPG::State"
+
+class Animation(RubyObject):
+    ruby_class_name = "RPG::Animation"
+
+class AnimationFrame(RubyObject):
+    ruby_class_name = "RPG::Animation::Frame"
+    def __init__(self, ruby_class_name=None, attributes=None):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        self.attributes['@cell_data'] = Table()._load(self.attributes['@cell_data']._private_data)
+
+class AnimationTiming(RubyObject):
+    ruby_class_name = "RPG::Animation::Timing"
+
+class CommonEvent(RubyObject):
+    ruby_class_name = "RPG::CommonEvent"
+
+class System(RubyObject):
+    ruby_class_name = "RPG::System"
+
+class SystemWords(RubyObject):
+    ruby_class_name = "RPG::System::Words"
+
+class SystemTestBattler(RubyObject):
+    ruby_class_name = "RPG::System::TestBattler"
 
 # Load all classes into registry
 # Python moment
