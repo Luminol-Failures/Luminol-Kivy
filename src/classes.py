@@ -278,6 +278,16 @@ class Map(RubyObject):
 
 class Event(RubyObject):
     ruby_class_name = "RPG::Event"
+    def __init__(self, ruby_class_name=None, attributes=None, x = None, y = None):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        if (self.attributes == {}):
+            self.attributes = {
+                "@id": 0,
+                "@name": "",
+                "@x": x,
+                "@y": y,
+                "@pages": EventPage()
+            }
 
     @property
     def id(self):
@@ -322,6 +332,24 @@ class Event(RubyObject):
 
 class EventPage(RubyObject):
     ruby_class_name = "RPG::Event::Page"
+    def __init__(self, ruby_class_name=None, attributes=None):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        if (self.attributes == {}):
+            self.attributes = {
+                '@condition': EventCondition(),
+                '@graphic': EventGraphic(),
+                '@move_type': 0,
+                '@move_speed': 3,
+                '@move_frequency': 3,
+                '@move_route': MoveRoute(),
+                '@walk_anime': True,
+                '@step_anime': True,
+                '@direction_fix': False,
+                '@through': False,
+                '@always_on_top': False,
+                '@trigger': 0,
+                '@list': [EventCommand()]
+            }
 
     @property
     def condition(self):
@@ -381,21 +409,280 @@ class EventPage(RubyObject):
 
 class EventCondition(RubyObject):
     ruby_class_name = "RPG::Event::Page::Condition"
+    def __init__(self, ruby_class_name=None, attributes=None):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        if (self.attributes == {}):
+            self.attributes = {
+                '@switch1_valid': False,
+                '@switch2_valid': False,
+                '@variable_valid': False,
+                '@self_switch_valid': False,
+                '@switch1_id': 1,
+                '@switch2_id': 1,
+                '@variable_id': 1,
+                '@variable_value': 0,
+                '@self_switch_ch': "A"
+            }
+    
+    @property
+    def switch1_valid(self):
+        return self.attributes['@switch1_valid']
+    
+    @switch1_valid.setter
+    def switch1_valid(self, value):
+        self.attributes['@switch1_valid'] = value
+
+    @property
+    def switch2_valid(self):
+        return self.attributes['@switch2_valid']
+    
+    @switch2_valid.setter
+    def switch2_valid(self, value):
+        self.attributes['@switch2_valid'] = value
+    
+    @property
+    def variable_valid(self):
+        return self.attributes['@variable_valid']
+    
+    @variable_valid.setter
+    def variable_valid(self, value):
+        self.attributes['@variable_valid'] = value
+
+    @property
+    def switch1_id(self):
+        return self.attributes['@switch1_id']
+    
+    @switch1_id.setter
+    def switch1_id(self, value):
+        self.attributes['@switch1_id'] = value
+
+    @property
+    def switch2_id(self):
+        return self.attributes['@switch2_id']
+    
+    @switch2_id.setter
+    def switch2_id(self, value):
+        self.attributes['@switch2_id'] = value
+    
+    @property
+    def variable_id(self):
+        return self.attributes['@variable_id']
+    
+    @variable_id.setter
+    def variable_id(self, value):
+        self.attributes['@variable_id'] = value
+    
+    @property
+    def self_switch_ch(self):
+        return self.attributes['@self_switch_ch']
+    
+    @self_switch_ch.setter
+    def self_switch_ch(self, value):
+        self.attributes['@self_switch_ch'] = value
 
 class EventGraphic(RubyObject):
     ruby_class_name = "RPG::Event::Page::Graphic"
+    def __init__(self, ruby_class_name=None, attributes=None):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        if (self.attributes == {}):
+            self.attributes = {
+                '@tile_id': 0,
+                '@character_name': "",
+                '@direction': 2,
+                '@pattern': 0,
+                '@opacity': 255,
+                '@blend_type': 0
+            }
+    
+    @property
+    def tile_id(self):
+        return self.attributes['@tile_id']
+    
+    @tile_id.setter
+    def tile_id(self, value):
+        self.attributes['@tile_id'] = value
+    
+    @property
+    def character_name(self):
+        return self.attributes['@character_name']
+    
+    @character_name.setter
+    def character_name(self, value):
+        self.attributes['@character_name'] = value
+    
+    @property
+    def direction(self):
+        return self.attributes['@direction']
+    
+    @direction.setter
+    def direction(self, value):
+        self.attributes['@direction'] = value
+    
+    @property
+    def pattern(self):
+        return self.attributes['@pattern']
+    
+    @pattern.setter
+    def pattern(self, value):
+        self.attributes['@pattern'] = value
+
+    @property
+    def opacity(self):
+        return self.attributes['@opacity']
+    
+    @opacity.setter
+    def opacity(self, value):
+        self.attributes['@opacity'] = value
+    
+    @property
+    def blend_type(self):
+        return self.attributes['@blend_type']
+    
+    @blend_type.setter
+    def blend_type(self, value):
+        self.attributes['@blend_type'] = value
 
 class EventCommand(RubyObject):
     ruby_class_name = "RPG::EventCommand"
+    def __init__(self, ruby_class_name=None, attributes=None, code = 0, indent = 0, parameters = []):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        if (self.attributes == {}):
+            self.attributes = {
+                '@code': code,
+                '@indent': indent,
+                '@parameters': parameters
+            }
+    
+    @property
+    def code(self):
+        return self.attributes['@code']
+    
+    @code.setter
+    def code(self, value):
+        self.attributes['@code'] = value
+
+    @property
+    def indent(self):
+        return self.attributes['@indent']
+    
+    @indent.setter
+    def indent(self, value):
+        self.attributes['@indent'] = value
+    
+    @property
+    def parameters(self):
+        return self.attributes['@parameters']
+
+    @parameters.setter
+    def parameters(self, value):
+        self.attributes['@parameters'] = value
 
 class MoveRoute(RubyObject):
     ruby_class_name = "RPG:::MoveRoute"
+    def __init__(self, ruby_class_name=None, attributes=None):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        if (self.attributes == {}):
+            self.attributes = {
+                '@repeat': True,
+                '@skippable': False,
+                '@list': [MoveCommand()]
+            }
+    
+    @property
+    def repeat(self):
+        return self.attributes['@repeat']
+    
+    @repeat.setter
+    def repeat(self, value):
+        self.attributes['@repeat'] = value
+
+    @property
+    def skippable(self):
+        return self.attributes['@skippable']
+    
+    @skippable.setter
+    def skippable(self, value):
+        self.attributes['@skippable'] = True
+    
+    @property
+    def list(self):
+        return self.attributes['@list']
+    
+    @list.setter
+    def list(self, value):
+        self.attributes['@list'] = value
 
 class MoveCommand(RubyObject):
     ruby_class_name = "RPG::MoveCommand"
+    def __init__(self, ruby_class_name=None, attributes=None, code = 0, parameters = []):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        if (self.attributes == {}):
+            self.attributes = {
+                '@code': code,
+                '@parameters': parameters
+            }
+    
+    @property
+    def code(self):
+        return self.attributes['@code']
+    
+    @code.setter
+    def code(self, value):
+        self.attributes['@code'] = value
+    
+    @property
+    def parameters(self):
+        return self.attributes['@parameters']
+    
+    @parameters.setter
+    def parameters(self, value):
+        self.attributes['@parameters'] = value
 
 class MapInfo(RubyObject):
     ruby_class_name = "RPG::MapInfo"
+    def __init__(self, ruby_class_name=None, attributes=None):
+        super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        if (self.attributes == {}):
+            self.attributes = {
+                '@name': "",
+                '@parent_id': 0,
+                '@order': 0,
+                '@expanded': False,
+                '@scroll_x': 0,
+                '@scrolly_y': 0
+            }
+    
+    @property
+    def name(self):
+        return self.attributes['@name']
+    
+    @name.setter
+    def name(self, value):
+        self.attributes['@name'] = value
+    
+    @property
+    def parent_id(self):
+        return self.attributes['@parent_id']
+    
+    @parent_id.setter
+    def parent_id(self, value):
+        self.attributes['@parent_id'] = value
+    
+    @property
+    def order(self):
+        return self.attributes['@order']
+    
+    @order.setter
+    def order(self, value):
+        self.attributes['@order'] = value
+    
+    @property
+    def expanded(self):
+        return self.attributes['@expanded']
+    
+    @expanded.setter
+    def expanded(self, value):
+        self.attributes['@expanded'] = value
 
 class AudioFile(RubyObject):
     ruby_class_name = "RPG::AudioFile"

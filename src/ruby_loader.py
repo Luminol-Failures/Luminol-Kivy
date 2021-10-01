@@ -20,7 +20,7 @@ class DataLoader():
         tilesets = self.load_data("Data/Tilesets.rxdata")
         return tilesets[id]
 
-from classes import Tileset
+from classes import Event
 loader = DataLoader()
-map = Tileset()
+map = Event()
 print(map)
