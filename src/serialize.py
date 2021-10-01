@@ -68,13 +68,13 @@ class Table(UserDef):
         self.elements = []
         if (num_of_dimensions == 1):
             xdata = []
-            xdata.append(
-                list(
-                    struct.unpack( "<" + "H"*xsize,  data[20:][:xsize*2]
+            xdata = list(
+                    struct.unpack( "<" + "H"*xsize,
+                        data[20:][:xsize*2]
                     )
                 )
-            )
-            self.elements.append(xdata)
+
+            self.elements = xdata
         elif (num_of_dimensions == 2):
             ydata = []
             for y in range(ysize):
@@ -120,16 +120,16 @@ class Table(UserDef):
         return self.elements
 
     def x(self, x):
-        return self.elements[0][0][x]
+        return self.elements[x]
     
     def set_x(self, x, value):
-        self.elements[0][0][x] = value
+        self.elements[x] = value
     
     def xy(self, x, y):
-        return self.elements[0][y][x]
+        return self.elements[y][x]
     
     def set_xy(self, x, y, value):
-        self.elements[0][y][x] = value
+        self.elements[y][x] = value
     
     def xyz(self, x, y, z):
         return self.elements[z][y][x]
@@ -139,30 +139,75 @@ class Table(UserDef):
 
     def _dump(self) -> bytes:
 
-        # TODO Get this working because RK never did this
-        return self.data
         elements = self.elements
+        # Set xsize to the length of the list
         xsize = len(elements)
+        # Is there multiple lists in elements?
         if xsize > 0 and type(elements[0]) is list:
-            ysize = len(elements[0])
+            # Correctly set xsize and ysize
+            xsize = len(elements[0])
+            ysize = len(elements)
+            # Are there lists inside the lists inside the list?
             if ysize > 0 and type(elements[0][0]) is list:
-                zsize = len(elements[0][0])
+                # Correctly set xsize and zsize
+                xsize = len(elements[0][0])
+                zsize = len(elements)
                 num_of_dimensions = 3
             else:
-                zsize = -1
+                zsize = 1
                 num_of_dimensions = 2
         else:
-            ysize = -1
-            zsize = -1
+            zsize = 1
+            ysize = 1
             num_of_dimensions = 1
+        
         if num_of_dimensions == 1:
-            flattened = elements
-        elif num_of_dimensions == 2:
-            flattened = [i for l in elements for i in l]
-        else:
-            flattened = [i for l1 in elements for l2 in l1 for i in l2]
-        assert len(flattened) == xsize * (ysize if num_of_dimensions > 1 else 1) * (zsize if num_of_dimensions > 2 else 1)
-        return struct.pack("<IIIII"+"H"*len(flattened), num_of_dimensions, xsize, ysize, zsize, len(flattened), *flattened)
+            flat_list = elements
+        
+        flat_list = []
+        for element in self.elements:
+            if type(element) is list:
+                for item in element:
+                    if type(element) is list:
+                        for item2 in item:
+                            flat_list.append(item2)
+                    else:
+                        flat_list.append(item)
+            else:
+                flat_list.append(element)
+
+        if len(flat_list) != xsize * ysize * zsize:
+            raise(AttributeError, "Table inproperly flattened?")
+
+        return struct.pack(
+            "<IIIII"+"H"*len(flat_list),
+            num_of_dimensions, xsize, ysize, zsize,
+            len(flat_list),
+            *flat_list
+        )
+        #return self.data
+        #elements = self.elements
+        #xsize = len(elements)
+        #if xsize > 0 and type(elements[0]) is list:
+        #    ysize = len(elements[0])
+        #    if ysize > 0 and type(elements[0][0]) is list:
+        #        zsize = len(elements[0][0])
+        #        num_of_dimensions = 3
+        #    else:
+        #        zsize = -1
+        #        num_of_dimensions = 2
+        #else:
+        #    ysize = -1
+        #    zsize = -1
+        #    num_of_dimensions = 1
+        #if num_of_dimensions == 1:
+        #    flattened = elements
+        #elif num_of_dimensions == 2:
+        #    flattened = [i for l in elements for i in l]
+        #else:
+        #    flattened = [i for l1 in elements for l2 in l1 for i in l2]
+        #assert len(flattened) == xsize * (ysize if num_of_dimensions > 1 else 1) * (zsize if num_of_dimensions > 2 else 1)
+        #return struct.pack("<IIIII"+"H"*len(flattened), num_of_dimensions, xsize, ysize, zsize, len(flattened), *flattened)
 
     def __repr__(self) -> str:
         return("Table(%s)"%(self.elements))

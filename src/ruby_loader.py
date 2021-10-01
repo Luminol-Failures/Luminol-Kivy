@@ -68,3 +68,10 @@ class DataLoader():
     def weapon(self, id = 1):
         weapons = self.load_data("Data/Weapons.rxdata")
         return weapons[id]
+
+class DataWriter():
+
+    def write_data(self, filename: str, data):
+        with open(filename, 'wb') as tset:
+            contents = writes(data)
+            tset.write(contents)
