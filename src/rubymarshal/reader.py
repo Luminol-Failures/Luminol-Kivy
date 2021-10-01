@@ -213,7 +213,14 @@ class Reader:
         if attrs.get("E") is True:
             encoding = "utf-8"
         elif "encoding" in attrs and type(attrs["encoding"]) is not RubyLink:
-            encoding = attrs["encoding"].decode()
+            if (type(attrs["encoding"]) == bytes):
+                encoding = attrs["encoding"].decode()
+            elif (type(attrs["encoding"]) == RubyString):
+                encoding = attrs["encoding"].__str__()
+            elif (type(attrs["encoding"]) == str):
+                encoding = attrs["encoding"]
+            else:
+                raise ValueError("I dunno what you did but this shouldn't happen hey here's a thing %s" % type(attrs["encoding"]))
         return encoding
 
     def read_attributes(self):
