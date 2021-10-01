@@ -1,10 +1,8 @@
-import re
-import sys
-import rubymarshal
-import classes
 from rubymarshal.reader import loads, load
 from rubymarshal.writer import writes, write
 from rubymarshal.classes import RubyObject
+import classes
+classes.load_classes()
 
 class DataLoader():
 

@@ -1,12 +1,15 @@
 #-----------------------------------------------------
 #   Define all RGSS classes in python because it makes my life easier
 #-----------------------------------------------------
-import re
-import sys, inspect
+import sys
+import inspect
 from rubymarshal.classes import RubyObject, registry
 from serialize import Table
 from serialize import Color
 from serialize import Tone
+from config import Config
+
+#from config import Config
 
 # There's probably a better and faster way to do this but whatever
 class Tileset(RubyObject):
@@ -559,7 +562,15 @@ class EventCommand(RubyObject):
                 '@indent': indent,
                 '@parameters': parameters
             }
-    
+        code_special = Config().code_config(self.code)
+        if (code_special[0]):
+            # Hacky switch statement beecause python doesn't have one for some reason
+            if code_special[1] == "color":
+                self.parameters[code_special[2]] = Color()._load(self.parameters[code_special[2]]._private_data)
+            elif code_special[1] == "tone":
+                self.parameters[code_special[2]] = Tone()._load(self.parameters[code_special[2]]._private_data)
+            print(self.parameters)
+
     @property
     def code(self):
         return self.attributes['@code']
@@ -810,6 +821,9 @@ class SystemTestBattler(RubyObject):
 
 # Load all classes into registry
 # Python moment
-for name, obj in inspect.getmembers(sys.modules[__name__]):
-    if inspect.isclass(obj):
-        registry.register(obj)
+def load_classes():
+    for name, obj in inspect.getmembers(sys.modules[__name__]):
+        if inspect.isclass(obj):
+            if issubclass(obj, RubyObject):
+                #print(obj)
+                registry.register(obj)

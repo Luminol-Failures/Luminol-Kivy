@@ -1,0 +1,8 @@
+{
+    "LuminolConfigVerison": 1,
+    
+    "special_commands": {
+        "color": [[224, 0]],
+        "tone": [[205, 0], [223, 0], [234, 1]]
+    }
+}
