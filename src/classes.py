@@ -13,9 +13,30 @@ class Tileset(RubyObject):
     ruby_class_name = "RPG::Tileset"
     def __init__(self, ruby_class_name=None, attributes=None):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
-        self.passages = Table()._load(self.attributes['@passages']._private_data)
-        self.terrain_tags = Table()._load(self.attributes['@terrain_tags']._private_data)
-        self.priorites = Table()._load(self.attributes['@priorities']._private_data)
+        if (self.attributes == {}):
+            self.attributes = {
+                '@id': 0,
+                '@name': "",
+                '@tileset_name': '',
+                '@autotile_names': [""] * 7,
+                '@panorama_name': "",
+                '@fog_name': "",
+                '@fog_hue': 0,
+                '@fog_opacity': 64,
+                '@fog_blend_type': 0,
+                '@fog_zoom': 200,
+                '@fog_sx': 0,
+                '@fog_sy': 0,
+                '@battleback_name': "",
+                '@passages': Table('Table', None, 384),
+                '@priorities': Table('Table', None, 384),
+                '@terrain_tags': Table('Table', None, 384),
+            }
+            self.priorities.set_x(0, 5)
+        else:
+            self.passages = Table()._load(self.attributes['@passages']._private_data)
+            self.terrain_tags = Table()._load(self.attributes['@terrain_tags']._private_data)
+            self.priorities = Table()._load(self.attributes['@priorities']._private_data)
 
     @property
     def id(self):
@@ -148,9 +169,23 @@ class Tileset(RubyObject):
 
 class Map(RubyObject):
     ruby_class_name = "RPG::Map"
-    def __init__(self, ruby_class_name=None, attributes=None):
+    def __init__(self, ruby_class_name=None, attributes=None, width = 20, height = 20):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
-        self.data = Table()._load(self.attributes['@data']._private_data)
+        if (self.attributes == {}):
+            self.set_attributes({
+                '@tileset_id': 1,
+                '@width': width,
+                '@height': height,
+                '@autoplay_bgm': False,
+                '@bgm': AudioFile(None, None, "", 80),
+                '@autoplay_bgs': False,
+                '@bgs': AudioFile(None, None, "", 80),
+                '@encounter_list': [],
+                '@data': Table('Table', None, width, height, 3),
+                '@events': {}
+            })
+        else:
+            self.data = Table()._load(self.attributes['@data']._private_data)
 
     @property
     def tileset_id(self):
@@ -364,8 +399,14 @@ class MapInfo(RubyObject):
 
 class AudioFile(RubyObject):
     ruby_class_name = "RPG::AudioFile"
-    def __init__(self, ruby_class_name=None, attributes=None):
+    def __init__(self, ruby_class_name=None, attributes=None, name = "", volume = 100, pitch = 100):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
+        if (self.attributes == {}):
+            self.attributes = {
+                '@name': name,
+                '@volume': volume,
+                '@pitch': pitch
+            }
 
     @property
     def volume(self):

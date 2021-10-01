@@ -19,3 +19,8 @@ class DataLoader():
     def tileset(self, id):
         tilesets = self.load_data("Data/Tilesets.rxdata")
         return tilesets[id]
+
+from classes import Tileset
+loader = DataLoader()
+map = Tileset()
+print(map)

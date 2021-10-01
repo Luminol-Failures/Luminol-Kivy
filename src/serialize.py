@@ -47,9 +47,20 @@ class Tone(UserDef):
         return self.__repr__()
 
 class Table(UserDef):
-    def __init__(self, classname='Table', elements=None):
+    def __init__(self, classname='Table', elements=None, xsize = 1, ysize = 1, zsize = 1):
         super().__init__(ruby_class_name=classname, attributes=None)
-        self.elements = elements
+        if (elements == None):
+            self.elements = []
+            for z in range(zsize):
+                ydata = []
+                for y in range(ysize):
+                    xdata = []
+                    for x in range(xsize):
+                        xdata.append(0)
+                    ydata.append(xdata)
+                self.elements.append(ydata)
+        else:
+            self.elements = elements
 
     def _load(self, data: bytes):
         num_of_dimensions, xsize, ysize, zsize, num_of_elements = struct.unpack("<IIIII", data[:20])
