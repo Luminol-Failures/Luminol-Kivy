@@ -1,7 +1,7 @@
 import io
 import re
 
-from rubymarshal.classes import (
+from src.rubymarshal.classes import (
     UsrMarshal,
     Symbol,
     UserDef,
@@ -12,7 +12,7 @@ from rubymarshal.classes import (
     registry as global_registry,
     RubyLink,
 )
-from rubymarshal.constants import (
+from src.rubymarshal.constants import (
     TYPE_NIL,
     TYPE_TRUE,
     TYPE_FALSE,
@@ -36,7 +36,7 @@ from rubymarshal.constants import (
     TYPE_USERDEF,
     TYPE_EXTENDED,
 )
-from rubymarshal.utils import read_ushort, read_sbyte, read_ubyte
+from src.rubymarshal.utils import read_ushort, read_sbyte, read_ubyte
 
 __author__ = "Matthieu Gallet"
 

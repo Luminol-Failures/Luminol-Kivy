@@ -3,11 +3,11 @@
 #-----------------------------------------------------
 import sys
 import inspect
-from rubymarshal.classes import RubyObject, registry
-from serialize import Table
-from serialize import Color
-from serialize import Tone
-from config import Config
+from src.rubymarshal.classes import RubyObject, registry
+from src.serialize import Table
+from src.serialize import Color
+from src.serialize import Tone
+from src.config import Config
 
 #from config import Config
 
@@ -751,9 +751,194 @@ class Actor(RubyObject):
     def __init__(self, ruby_class_name=None, attributes=None):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
         self.attributes['parameters'] = Table()._load(self.attributes['@parameters']._private_data)
+    
+    @property
+    def id(self):
+        return self.attributes['@id']
+    
+    @id.setter
+    def id(self, value):
+        self.attributes['@id'] = value
+
+    @property
+    def name(self):
+        return self.attributes['@name']
+
+    @name.setter
+    def name(self, value):
+        self.attributes['@name'] = value
+
+    @property
+    def class_id(self):
+        return self.attributes['@class_id']
+
+    @class_id.setter
+    def class_id(self, value):
+        self.attributes['class_id'] = value
+
+    @property
+    def initial_level(self):
+        return self.attributes['initial_level']
+
+    @initial_level.setter
+    def initial_level(self, value):
+        self.attributes['initial_level'] = value
+
+    @property
+    def final_level(self):
+        return self.attributes['final_level']
+
+    @final_level.setter
+    def final_level(self, value):
+        self.attributes['final_level'] = value
+
+    @property
+    def exp_basis(self):
+        return self.attributes['exp_basis']
+
+    @exp_basis.setter
+    def exp_basis(self, value):
+        self.attributes['exp_basis'] = value
+
+    @property
+    def exp_inflation(self):
+        return self.attributes['exp_inflation']
+
+    @exp_inflation.setter
+    def exp_inflation(self, value):
+        self.attributes['exp_inflation'] = value
+    
+    @property
+    def character_name(self):
+        return self.attributes['character_name']
+
+    @character_name.setter
+    def character_name(self, value):
+        self.attributes['character_name'] = value
+
+    @property
+    def character_hue(self):
+        return self.attributes['character_hue'] 
+
+    @character_hue.setter
+    def character_hue(self, value):
+        self.attributes['character_hue'] = value
+
+    @property
+    def battler_name(self):
+        return self.attributes['battler_name']
+
+    @battler_name.setter
+    def battler_name(self, value):
+        self.attributes['battler_name'] = value
+    
+    @property
+    def battler_hue(self):
+        return self.attributes['battler_hue']
+
+    @battler_hue.setter
+    def battler_hue(self, value):
+        self.attributes['battler_hue'] = value
+
+    @property
+    def parameters(self):
+        return self.attributes['parameters']
+
+    @parameters.setter
+    def parameters(self, value):
+        self.attributes['parameters'] = value
+    
+    @property
+    def weapon_id(self):
+        return self.attributes['weapon_id']
+
+    @weapon_id.setter
+    def weapon_id(self, value):
+        self.attributes['weapon_id'] = value
+    
+    @property
+    def armor1_id(self):
+        return self.attributes['armor1_id']
+
+    @armor1_id.setter
+    def armor1_id(self, value):
+        self.attributes['armor2_id'] = value
+    
+    @property
+    def armor2_id(self):
+        return self.attributes['armor2_id']
+
+    @armor2_id.setter
+    def armor2_id(self, value):
+        self.attributes['armor2_id'] = value
+    
+    @property
+    def armor3_id(self):
+        return self.attributes['armor3_id']
+
+    @armor3_id.setter
+    def armor3_id(self, value):
+        self.attributes['armor3_id'] = value
+    
+    @property
+    def armor4_id(self):
+        return self.attributes['armor4_id']
+
+    @armor4_id.setter
+    def armor4_id(self, value):
+        self.attributes['armor4_id'] = value
+
+    @property
+    def weapon_fix(self):
+        return self.attributes['weapon_fix']
+
+    @weapon_fix.setter
+    def weapon_fix(self, value):
+        self.attributes['weapon_fix'] = value
+
+    @property
+    def armor1_fix(self):
+        return self.attributes['armor1_fix']
+    
+    @armor1_fix.setter
+    def armor1_fix(self, value):
+        self.attributes['armor2_fix'] = value
+    
+    @property
+    def armor2_fix(self):
+        return self.attributes['armor2_fix']
+
+    @armor2_fix.setter
+    def armor2_fix(self, value):
+        self.attributes['armor2_fix'] = value
+    
+    @property
+    def armor3_fix(self):
+        return self.attributes['armor3_fix']
+
+    @armor3_fix.setter
+    def armor3_fix(self, value):
+        self.attributes['armor3_fix'] = value
+    
+    @property
+    def armor4_fix(self):
+        return self.attributes['armor4_fix']
+
+    @armor4_fix.setter
+    def armor4_fix(self, value):
+        self.attributes['armor4_fix'] = value
 
 class RPGClass(RubyObject):
     ruby_class_name = "RPG::Class"
+
+    #attr_accessor :id
+    #attr_accessor :name
+    #attr_accessor :position
+    #attr_accessor :weapon_set
+    #attr_accessor :armor_set
+    #attr_accessor :element_ranks
+    #attr_accessor :state_ranks
+    #attr_accessor :learnings
 
 class Learning(RubyObject):
     ruby_class_name = "RPG::Class::Learning"

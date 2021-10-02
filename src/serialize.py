@@ -1,7 +1,7 @@
 from re import S
-from rubymarshal.classes import UserDef, RubyObject, registry
-import rubymarshal.reader as reader
-import rubymarshal.writer as writer
+from src.rubymarshal.classes import UserDef, RubyObject, registry
+import src.rubymarshal.reader as reader
+import src.rubymarshal.writer as writer
 from typing import Type
 from typing import Type
 import struct
@@ -135,12 +135,27 @@ class Table(UserDef):
     
     def xyz(self, x, y, z):
         return self.elements[z][y][x]
+
     
     def set_xyz(self, x, y, z, value):
         self.elements[z][y][x] = value
 
     def resize(self, x, y = 0, z = 0):
         new_table = Table('Table', None, x, y, z)
+        assert x > 0
+        # Logic taken from R48! Thanks 20kdc
+        for i in range(self.xsize):
+            if x <= i:
+                break
+            for j in range(self.ysize):
+                if y <= j:
+                    break
+                for k in range(self.zsize):
+                    if z <= k:
+                        break
+                    new_table.set_xyz(i, j, k, self.xyz(i, j, k))
+        # It's up to you to set the table to the new table
+        return new_table
 
     def calculate_variables(self, elements):
         xsize = len(elements)

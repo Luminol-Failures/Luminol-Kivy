@@ -2,7 +2,7 @@ import io
 import math
 import re
 
-from rubymarshal.classes import (
+from src.rubymarshal.classes import (
     Symbol,
     UsrMarshal,
     UserDef,
@@ -10,7 +10,7 @@ from rubymarshal.classes import (
     Module,
     RubyObject,
 )
-from rubymarshal.constants import (
+from src.rubymarshal.constants import (
     TYPE_BIGNUM,
     TYPE_STRING,
     TYPE_REGEXP,
@@ -30,8 +30,8 @@ from rubymarshal.constants import (
     TYPE_MODULE,
     TYPE_OBJECT,
 )
-from rubymarshal.constants import TYPE_FLOAT
-from rubymarshal.utils import write_ushort, write_sbyte, write_ubyte
+from src.rubymarshal.constants import TYPE_FLOAT
+from src.rubymarshal.utils import write_ushort, write_sbyte, write_ubyte
 
 __author__ = "Matthieu Gallet"
 

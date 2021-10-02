@@ -1,11 +1,10 @@
-from rubymarshal.reader import loads, load
-from rubymarshal.writer import writes, write
-from rubymarshal.classes import RubyObject
-import classes
-classes.load_classes()
+from src.rubymarshal.reader import loads, load
+from src.rubymarshal.writer import writes, write
+from src.rubymarshal.classes import RubyObject
+import src.classes
+src.classes.load_classes()
 
 class DataLoader():
-
     def load_data(self, filename: str):
         with open(filename, 'rb') as tset:
             content = load(tset)
@@ -20,7 +19,6 @@ class DataLoader():
     def tileset(self, id = 1):
         tilesets = self.load_data("Data/Tilesets.rxdata")
         return tilesets[id]
-
     def commonevent(self, id = 1):
         commonevents = self.load_data("Data/CommonEvents.rxdata")
         return commonevents[id]
@@ -75,3 +73,5 @@ class DataWriter():
         with open(filename, 'wb') as tset:
             contents = writes(data)
             tset.write(contents)
+
+# ! Cryro was here, I did nothing
