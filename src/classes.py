@@ -742,6 +742,7 @@ class AudioFile(RubyObject):
         self.attributes['@name'] = value
 
 # TODO Finish these classes to be equivalent with the others
+# Not done these yet since I've been working on other stuff and this is super repetitive.
 class Actor(RubyObject):
     ruby_class_name = "RPG::Actor"
     def __init__(self, ruby_class_name=None, attributes=None):
