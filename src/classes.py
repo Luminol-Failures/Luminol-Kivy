@@ -566,10 +566,13 @@ class EventCommand(RubyObject):
         if (code_special[0]):
             # Hacky switch statement beecause python doesn't have one for some reason
             if code_special[1] == "color":
-                self.parameters[code_special[2]] = Color()._load(self.parameters[code_special[2]]._private_data)
+                c = Color()
+                c._load(self.parameters[code_special[2]]._private_data)
+                self.parameters[code_special[2]] = c
             elif code_special[1] == "tone":
-                self.parameters[code_special[2]] = Tone()._load(self.parameters[code_special[2]]._private_data)
-            print(self.parameters)
+                t = Tone()
+                t._load(self.parameters[code_special[2]]._private_data)
+                self.parameters[code_special[2]] = t
 
     @property
     def code(self):
@@ -596,7 +599,7 @@ class EventCommand(RubyObject):
         self.attributes['@parameters'] = value
 
 class MoveRoute(RubyObject):
-    ruby_class_name = "RPG:::MoveRoute"
+    ruby_class_name = "RPG::MoveRoute"
     def __init__(self, ruby_class_name=None, attributes=None):
         super().__init__(ruby_class_name=ruby_class_name, attributes=attributes)
         # Default values

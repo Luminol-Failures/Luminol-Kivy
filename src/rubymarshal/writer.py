@@ -171,7 +171,10 @@ class Writer:
             if "E" in attributes and not attributes["E"]:
                 encoding = "latin-1"
             elif "encoding" in attributes:
-                encoding = attributes["encoding"].decode()
+                try:
+                    encoding = attributes["encoding"].decode()
+                except (AttributeError, UnicodeDecodeError):
+                    encoding = attributes["encoding"].__str__()
             else:
                 attributes["E"] = True
             encoded = obj.encode(encoding)
