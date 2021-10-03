@@ -20,7 +20,7 @@ class TileMap(Widget):
         self.width = self.map.width * self.scale
         self.height = self.map.height * self.scale
 
-
+        self.grid = True
         self.tiles = []
         self.load_tiles()
         self.draw_map_tiles()
@@ -39,6 +39,13 @@ class TileMap(Widget):
             for x in range(texture.width // 32):
                 tile = texture.get_region(x * 32, y * 32, 32, 32)
                 self.tiles.append(tile)
+    
+    def set_grid(self, value):
+        if value == 'normal':
+            self.grid = False
+        else:
+            self.grid = True
+        self.draw_map_tiles()
     
     def draw_map_tiles(self, *args):
         self.width = self.map.width * self.scale
@@ -75,3 +82,12 @@ class TileMap(Widget):
                                         pos = (x * self.scale,-((y - self.map.height - 1) * self.scale + self.scale * 2)), 
                                         size = (self.scale, self.scale)
                                     )
+            if self.grid:
+                grid_texture = Image(source='assets/tile_grid.png').texture
+                for y in range(self.map.height - 1):
+                    for x in range(self.map.width - 1):
+                        Rectangle(
+                            texture = grid_texture, 
+                            pos = (x * self.scale,-((y - self.map.height - 1) * self.scale + self.scale * 2)), 
+                            size = (self.scale, self.scale)
+                        )

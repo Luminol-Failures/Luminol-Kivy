@@ -2,4 +2,5 @@ kivy_venv
 Data_JSON
 Data
 Graphics
+Build
 *.pyc
