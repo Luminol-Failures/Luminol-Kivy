@@ -5,6 +5,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from src.tilemap import TileMap
 from src.mapinfo import MapList
+from src.tilepicker import TilePicker
 from kivy.uix.scrollview import ScrollView
 from kivy.core.window import Window
 from kivy.uix.togglebutton import ToggleButton
@@ -22,7 +23,7 @@ class EditorLayout(GridLayout):
         self.map_id = 12
 
         left_layout = BoxLayout(orientation ='vertical')
-        right_layout = Splitter(sizable_from = 'right', min_size = 100, max_size = 256)
+        right_layout = Splitter(sizable_from = 'right', min_size = 100)
         right_box = BoxLayout(orientation ='vertical')
         right_layout.add_widget(right_box)
 
@@ -55,7 +56,10 @@ class EditorLayout(GridLayout):
         maplist_scroller.add_widget(self.maplist)
         maplist_splitter = Splitter(sizable_from = 'top')
         maplist_splitter.add_widget(maplist_scroller)
-
+        mappicker_scroller = ScrollView(scroll_type = ['bars', 'content'], bar_width = 10)
+        self.tilepicker = TilePicker(self.map_id)
+        mappicker_scroller.add_widget(self.tilepicker)
+        right_box.add_widget(mappicker_scroller)
         right_box.add_widget(maplist_splitter)
         
         self.add_widget(right_layout)
