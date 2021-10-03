@@ -7,7 +7,7 @@ from kivy.uix.image import Image
 from src.ruby_loader import DataLoader
 
 class TileMap(Widget):
-    def __init__(self, id = 12, **kwargs):
+    def __init__(self, id = 1, **kwargs):
         super(TileMap, self).__init__(**kwargs)
 
         self.map = DataLoader().map(id)

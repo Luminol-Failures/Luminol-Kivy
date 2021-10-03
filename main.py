@@ -1,30 +1,34 @@
-from re import S
-import kivy
+from re import M
 from kivy.app import App
-from kivy.uix.anchorlayout import AnchorLayout
+from kivy.core import window
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from src.tilemap import TileMap
+from src.mapinfo import MapList
 from kivy.uix.scrollview import ScrollView
-from kivy.effects.scroll import ScrollEffect
 from kivy.core.window import Window
 from kivy.uix.togglebutton import ToggleButton
-from kivy.uix.image import Image
+from kivy.uix.splitter import Splitter
 import os, sys
 from kivy.resources import resource_add_path, resource_find
 
-class EditorLayout(AnchorLayout):
+class EditorLayout(GridLayout):
 
     def __init__(self, **kwargs):
         super(EditorLayout, self).__init__(**kwargs)
 
-        self.anchor_x = 'left'
-        self.anchor_y = 'top'
+        self.cols = 2
+
+        self.map_id = 12
 
         left_layout = BoxLayout(orientation ='vertical')
-        self.root = ScrollView(size_hint_y=None, height = Window.height - 40)
-        self.root.bar_width = 5
+        right_layout = Splitter(sizable_from = 'right', min_size = 100, max_size = 256)
+        right_box = BoxLayout(orientation ='vertical')
+        right_layout.add_widget(right_box)
 
-        self.tilemap = TileMap()
+        self.root = ScrollView(size_hint_y=None, height = Window.height - 40, scroll_type = ['bars', 'content'], bar_width = 5)
+
+        self.tilemap = TileMap(self.map_id)
 
         top_buttons = BoxLayout(orientation = 'horizontal')
 
@@ -46,6 +50,15 @@ class EditorLayout(AnchorLayout):
         left_layout.add_widget(top_buttons)
         left_layout.add_widget(self.root)
         
+        self.maplist = MapList()
+        maplist_scroller = ScrollView(scroll_type = ['bars', 'content'], bar_width = 10)
+        maplist_scroller.add_widget(self.maplist)
+        maplist_splitter = Splitter(sizable_from = 'top')
+        maplist_splitter.add_widget(maplist_scroller)
+
+        right_box.add_widget(maplist_splitter)
+        
+        self.add_widget(right_layout)
         self.add_widget(left_layout)
     
     def scale_map_1(self, *args):
