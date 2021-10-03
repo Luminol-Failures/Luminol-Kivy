@@ -25,6 +25,12 @@ class TileMap(Widget):
         self.load_tiles()
         self.draw_map_tiles()
 
+    def set_map_id(self, id):
+        self.map = DataLoader().map(id)
+        self.data = self.map.data
+        self.load_tiles()
+        self.draw_map_tiles()
+
     def set_scale(self, value):
         self.scale = value
         self.draw_map_tiles()
@@ -50,24 +56,28 @@ class TileMap(Widget):
     def draw_map_tiles(self, *args):
         self.width = self.map.width * self.scale
         self.height = self.map.height * self.scale
+        tileset = DataLoader().tileset(self.map.tileset_id)
+        grid_texture = Image(source='assets/tile_grid.png').texture
+
+        if tileset.panorama_name.decode() != "":
+            bg_name = f"Graphics/Panoramas/{tileset.panorama_name.decode()}.png"
+            bg_texture = Image(source=bg_name, mipmap = True).texture
+
+            bg_texture.wrap = 'repeat'
+            bg_texture.uvsize = (self.width / bg_texture.width, self.height / bg_texture.height)
 
         with self.canvas:
             self.canvas.clear()
-            tileset = DataLoader().tileset(self.map.tileset_id)
             if tileset.panorama_name.decode() != "":
-                bg_name = f"Graphics/Panoramas/{tileset.panorama_name.decode()}.png"
-                bg_texture = Image(source=bg_name, mipmap = True).texture
-
-                bg_texture.wrap = 'repeat'
-                bg_texture.uvsize = (self.width / bg_texture.width, self.height / bg_texture.height)
 
                 Rectangle(texture=bg_texture, size = (self.map.width * self.scale, self.map.height * self.scale), pos = self.pos)
             else:
-                Rectangle(size = (self.width, self.width), pos = self.pos)
+                Color(0.10, 0.10, 0.10)
+                Rectangle(size = (self.map.width * self.scale, self.map.height * self.scale), pos = self.pos)
 
-            for z in range(self.map.data.zsize - 1):
-                for y in range(self.map.height - 1):
-                    for x in range(self.map.width - 1):
+            for z in range(self.map.data.zsize):
+                for y in range(self.map.height):
+                    for x in range(self.map.width):
                         tile = self.data.xyz(x,y,z)
                         if tile > 384:
                             if tile > len(self.tiles):
@@ -83,9 +93,8 @@ class TileMap(Widget):
                                         size = (self.scale, self.scale)
                                     )
             if self.grid:
-                grid_texture = Image(source='assets/tile_grid.png').texture
-                for y in range(self.map.height - 1):
-                    for x in range(self.map.width - 1):
+                for y in range(self.map.height):
+                    for x in range(self.map.width):
                         Rectangle(
                             texture = grid_texture, 
                             pos = (x * self.scale,-((y - self.map.height - 1) * self.scale + self.scale * 2)), 

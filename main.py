@@ -7,6 +7,7 @@ from src.tilemap import TileMap
 from src.mapinfo import MapList
 from src.tilepicker import TilePicker
 from kivy.uix.scrollview import ScrollView
+from kivy.effects.scroll import ScrollEffect
 from kivy.core.window import Window
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.splitter import Splitter
@@ -20,10 +21,10 @@ class EditorLayout(GridLayout):
 
         self.cols = 2
 
-        self.map_id = 12
+        self.map_id = 1
 
         left_layout = BoxLayout(orientation ='vertical')
-        right_layout = Splitter(sizable_from = 'right', min_size = 100)
+        right_layout = Splitter(sizable_from = 'right', min_size = 15, max_size = 270)
         right_box = BoxLayout(orientation ='vertical')
         right_layout.add_widget(right_box)
 
@@ -56,7 +57,7 @@ class EditorLayout(GridLayout):
         maplist_scroller.add_widget(self.maplist)
         maplist_splitter = Splitter(sizable_from = 'top')
         maplist_splitter.add_widget(maplist_scroller)
-        mappicker_scroller = ScrollView(scroll_type = ['bars', 'content'], bar_width = 10)
+        mappicker_scroller = ScrollView(scroll_type = ['bars', 'content'], bar_width = 10, effect_cls = ScrollEffect)
         self.tilepicker = TilePicker(self.map_id)
         mappicker_scroller.add_widget(self.tilepicker)
         right_box.add_widget(mappicker_scroller)
@@ -79,6 +80,10 @@ class EditorLayout(GridLayout):
 
     def resize(self, *args):
         self.root.height = Window.height - 40
+    
+    def set_map_id(self, id):
+        self.tilepicker.set_map_id(id)
+        self.tilemap.set_map_id(id)
 
 class LuminolApp(App):
 
@@ -89,6 +94,7 @@ class LuminolApp(App):
             self.layout = self.layout
 
         def build(self):
+            #self.layout.set_map_id(347)
             return self.layout
 
 if __name__ == '__main__':
