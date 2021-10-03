@@ -7,7 +7,7 @@ from kivy.uix.image import Image
 from src.ruby_loader import DataLoader
 
 class TileMap(Widget):
-    def __init__(self, id = 276, **kwargs):
+    def __init__(self, id = 12, **kwargs):
         super(TileMap, self).__init__(**kwargs)
 
         self.map = DataLoader().map(id)
@@ -54,9 +54,9 @@ class TileMap(Widget):
                 bg_texture.wrap = 'repeat'
                 bg_texture.uvsize = (self.width / bg_texture.width, self.height / bg_texture.height)
 
-                Rectangle(texture=bg_texture, size = (self.width, self.width), pos = self.pos)
+                Rectangle(texture=bg_texture, size = (self.map.width * self.scale, self.map.height * self.scale), pos = self.pos)
             else:
-                Rectangle()
+                Rectangle(size = (self.width, self.width), pos = self.pos)
 
             for z in range(self.map.data.zsize - 1):
                 for y in range(self.map.height - 1):
