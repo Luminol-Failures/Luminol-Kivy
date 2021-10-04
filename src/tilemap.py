@@ -3,6 +3,7 @@ from kivy.uix.widget import Widget
 from kivy.graphics import (
     RenderContext, BindTexture, Rectangle, Color
 )
+from kivy.graphics.scissor_instructions import ScissorPush, ScissorPop
 from kivy.uix.image import Image
 from src.ruby_loader import DataLoader
 
@@ -22,18 +23,22 @@ class TileMap(Widget):
 
         self.grid = True
         self.coords = []
+
         self.load_tiles()
         self.draw_map_tiles()
+        self.draw_events()
 
     def set_map_id(self, id):
         self.map = DataLoader().map(id)
         self.data = self.map.data
         self.load_tiles()
         self.draw_map_tiles()
+        self.draw_events()
 
     def set_scale(self, value):
         self.scale = value
         self.draw_map_tiles()
+        self.draw_events()
 
     def load_tiles(self):
         tileset = DataLoader().tileset(self.map.tileset_id)
@@ -103,7 +108,70 @@ class TileMap(Widget):
                     for x in range(self.map.width):
                         Rectangle(
                             texture = grid_texture, 
-                            pos = (x * self.scale,-((y - self.map.height - 1) * self.scale + self.scale * 2)), 
+                            pos = (x * self.scale, -((y - self.map.height - 1) * self.scale + self.scale * 2)), 
                             size = (self.scale, self.scale)
                         )
+
+    def draw_events(self):
+        tileset = DataLoader().tileset(self.map.tileset_id)
+        name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
+        tileset_texture = Image(source = name).texture
+
+        events = self.map.events
+        blank_event_texture = Image(source='assets/event.png').texture
+        for id, event in events.items():
+            graphic = event.pages[0].graphic
+            try:
+                name = graphic.character_name.decode()
+            except AttributeError:
+                name = graphic.character_name.text
+
+            if name != "":
+                event_graphic = Image(source=f"Graphics/Characters/{graphic.character_name.decode()}.png").texture
+                with self.canvas:
+                    cw = event_graphic.width // 4 
+                    ch = event_graphic.height // 4
+
+                    u = (cw * graphic.pattern) / event_graphic.width
+                    v = (ch / event_graphic.height)
+                    w = (cw / event_graphic.width)
+                    h = -(ch / event_graphic.height)
+                    coords = u, v, u + w, v, u + w, v + h, u, v + h
+
+                    #x, y = self.to_window(*self.pos)
+                    #ScissorPush(
+                    #    x = event.x * self.scale + x,
+                    #    y = event.y * self.scale + y,
+                    #    width = 32,
+                    #    height = 32
+                    #)
+
+                    Rectangle(
+                        texture = event_graphic,
+                        size = (cw * (self.scale / 32), ch * (self.scale / 32)),
+                        pos = ((event.x * self.scale), -((event.y - self.map.height - 1) * self.scale + self.scale * 2)),
+                        tex_coords = coords
+                    )
+
+
+            elif graphic.tile_id != 0:
+                try:
+                    coords = self.coords[graphic.tile_id - 384]
+                except IndexError:
+                    coords = self.coords[0]
+                with self.canvas:
+                    Rectangle(
+                        texture = tileset_texture, 
+                        pos = (event.x * self.scale,-((event.y - self.map.height - 1) * self.scale + self.scale * 2)), 
+                        size = (self.scale, self.scale),
+                        tex_coords = coords
+                    )
+
+        for id, event in events.items():
+            with self.canvas:
+                Rectangle(
+                    texture=blank_event_texture, 
+                    size = (self.scale, self.scale), 
+                    pos = (event.x * self.scale, -((event.y - self.map.height - 1) * self.scale + self.scale * 2))
+                )
     
