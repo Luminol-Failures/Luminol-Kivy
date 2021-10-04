@@ -8,12 +8,14 @@ class MapList(TreeView):
 
         self.mapinfos = DataLoader().load_data('Data/MapInfos.rxdata')
         self.mapinfos_sorted = {}
+        self.nodes = {}
         self.order_mapinfos()
         self.load_mapinfos()
         self.root_options = {'text': 'Maps'}
 
         self.size_hint_y = None
         self.bind(on_node_expand = self.set_height, on_node_collapse = self.set_height)
+        
 
     def order_mapinfos(self):
         self.mapsinfos_sorted = {}
@@ -27,25 +29,33 @@ class MapList(TreeView):
                 break
     
     def load_mapinfos(self):
-        nodes = {}
+        self.nodes = {}
         for key, value in self.mapinfos_sorted.items():
             if type(value.name) == bytes:
-                nodes[int(key)] = TreeViewLabel(text=value.name.decode())
+                self.nodes[int(key)] = TreeViewLabel(text=value.name.decode())
             else:
-                nodes[int(key)] = TreeViewLabel(text=value.name.text)
+                self.nodes[int(key)] = TreeViewLabel(text=value.name.text)
 
         for key, value in self.mapinfos_sorted.items():
             if value.parent_id == 0:
-                self.add_node(nodes[key])
+                self.add_node(self.nodes[key])
             else:
-                self.add_node(nodes[key], nodes[value.parent_id])
+                self.add_node(self.nodes[key], self.nodes[value.parent_id])
             
             if value.expanded:
-                self.toggle_node(nodes[key])
-        self.select_node(nodes[list(self.mapinfos_sorted.keys())[0]])
+                self.toggle_node(self.nodes[key])
+        self.select_node(self.nodes[list(self.mapinfos_sorted.keys())[0]])
         self.set_height()
+        print(self.get_selected_map())
     
     def set_height(self, *args):
         self.height = 28
         for node in self.iterate_open_nodes():
             self.height += 28
+        
+    def get_selected_map(self):
+        selected_node = self.selected_node
+        for key, value in self.nodes.items():
+            if value == selected_node:
+                return key
+        return 1

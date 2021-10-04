@@ -66,14 +66,15 @@ class TileMap(Widget):
             bg_texture.wrap = 'repeat'
             bg_texture.uvsize = (self.width / bg_texture.width, self.height / bg_texture.height)
 
+        self.canvas.clear()
         with self.canvas:
-            self.canvas.clear()
             if tileset.panorama_name.decode() != "":
 
                 Rectangle(texture=bg_texture, size = (self.map.width * self.scale, self.map.height * self.scale), pos = self.pos)
             else:
                 Color(0.10, 0.10, 0.10)
                 Rectangle(size = (self.map.width * self.scale, self.map.height * self.scale), pos = self.pos)
+                Color(1,1,1,1)
 
             for z in range(self.map.data.zsize):
                 for y in range(self.map.height):

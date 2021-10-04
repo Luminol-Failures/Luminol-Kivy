@@ -1,4 +1,5 @@
-from re import M
+import kivy
+from kivy_deps import sdl2, glew
 from kivy.app import App
 from kivy.core import window
 from kivy.uix.gridlayout import GridLayout
@@ -53,6 +54,7 @@ class EditorLayout(GridLayout):
         left_layout.add_widget(self.root)
         
         self.maplist = MapList()
+        self.maplist.bind(on_touch_down=self.on_map_select)
         maplist_scroller = ScrollView(scroll_type = ['bars', 'content'], bar_width = 10)
         maplist_scroller.add_widget(self.maplist)
         maplist_splitter = Splitter(sizable_from = 'top')
@@ -65,6 +67,8 @@ class EditorLayout(GridLayout):
         
         self.add_widget(right_layout)
         self.add_widget(left_layout)
+        
+        self.on_map_select()
     
     def scale_map_1(self, *args):
         self.tilemap.set_scale(32)
@@ -82,8 +86,14 @@ class EditorLayout(GridLayout):
         self.root.height = Window.height - 40
     
     def set_map_id(self, id):
+        self.map_id = id
         self.tilepicker.set_map_id(id)
         self.tilemap.set_map_id(id)
+    
+    def on_map_select(self, *args):
+        map_id = self.maplist.get_selected_map()
+        if self.map_id != map_id:
+            self.set_map_id(map_id)
 
 class LuminolApp(App):
 
