@@ -149,7 +149,7 @@ class TileMap(Widget):
                     Rectangle(
                         texture = event_graphic,
                         size = (cw * (self.scale / 32), ch * (self.scale / 32)),
-                        pos = ((event.x * self.scale), -((event.y - self.map.height - 1) * self.scale + self.scale * 2)),
+                        pos = ((event.x * self.scale) + 16 - (cw / 2), -((event.y - self.map.height - 1) * self.scale + self.scale * 2)),
                         tex_coords = coords
                     )
 
