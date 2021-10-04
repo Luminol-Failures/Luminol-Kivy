@@ -46,7 +46,6 @@ class MapList(TreeView):
                 self.toggle_node(self.nodes[key])
         self.select_node(self.nodes[list(self.mapinfos_sorted.keys())[0]])
         self.set_height()
-        print(self.get_selected_map())
     
     def set_height(self, *args):
         self.height = 28
