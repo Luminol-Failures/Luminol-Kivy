@@ -50,7 +50,7 @@ class RubyString(RubyObject):
             return getattr(self.text, item)
         except AttributeError:
             if item != 'decode':
-                raise(AttributeError, 'dingus')
+                raise(AttributeError('I\'m not sure what triggered this but %r is not an attribute of %r' % (item, self)))
             return self.__str__
 
     def __add__(self, other):

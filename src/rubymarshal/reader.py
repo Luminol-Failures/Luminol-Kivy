@@ -1,6 +1,6 @@
 import io
 import re
-
+from collections import defaultdict
 from src.rubymarshal.classes import (
     UsrMarshal,
     Symbol,
@@ -35,6 +35,7 @@ from src.rubymarshal.constants import (
     TYPE_CLASS,
     TYPE_USERDEF,
     TYPE_EXTENDED,
+    TYPE_HASH_DEF
 )
 from src.rubymarshal.utils import read_ushort, read_sbyte, read_ubyte
 
@@ -68,6 +69,7 @@ class Reader:
             TYPE_DATA,
             TYPE_USRMARSHAL,
             TYPE_STRING,
+            TYPE_HASH_DEF
         ):
             self.objects.append(None)
             object_index = len(self.objects)
@@ -119,6 +121,17 @@ class Reader:
                 key = self.read()
                 value = self.read()
                 result[key] = value
+            result = result
+        elif token == TYPE_HASH_DEF:
+            num_elements = self.read_long()
+            temp = {}
+            for x in range(num_elements):
+                key = self.read()
+                value = self.read()
+                temp[key] = value
+            default = self.read()
+            result = defaultdict(lambda: default)
+            result.update(temp)
             result = result
         elif token == TYPE_FLOAT:
             size = self.read_long()

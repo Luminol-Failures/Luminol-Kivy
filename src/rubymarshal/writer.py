@@ -1,3 +1,4 @@
+from collections import defaultdict
 import io
 import math
 import re
@@ -29,6 +30,7 @@ from src.rubymarshal.constants import (
     TYPE_CLASS,
     TYPE_MODULE,
     TYPE_OBJECT,
+    TYPE_HASH_DEF
 )
 from src.rubymarshal.constants import TYPE_FLOAT
 from src.rubymarshal.utils import write_ushort, write_sbyte, write_ubyte
@@ -60,6 +62,8 @@ class Writer:
             self.write_list(obj)
         elif isinstance(obj, dict):
             self.write_dict(obj)
+        elif isinstance(obj, defaultdict):
+            self.write_defaultdict(obj)
         elif isinstance(obj, bytes):
             self.write_bytes(obj)
         elif isinstance(obj, str):
@@ -202,6 +206,15 @@ class Writer:
             for key, value in obj.items():
                 self.write(key)
                 self.write(value)
+
+    def write_defaultdict(self, obj):
+        if self.must_write(obj):
+            self.fd.write(TYPE_HASH_DEF)
+            self.write_long(len(obj))
+            for key, value in obj.items():
+                self.write(key)
+                self.write(value)
+            self.write(obj.default_factory())
 
     def write_list(self, obj):
         if self.must_write(obj):
