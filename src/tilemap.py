@@ -1,10 +1,14 @@
+from kivy import graphics
 from kivy.core.image import Texture
 from kivy.uix.widget import Widget
 from kivy.graphics import (
     RenderContext, BindTexture, Rectangle, Color
 )
 from kivy.graphics.scissor_instructions import ScissorPush, ScissorPop
-from kivy.uix.image import Image
+from kivy.uix.image import Image as kiImage
+from kivy.core.image import Image as CoreImage
+from PIL import Image, ImageDraw, ImageFont
+from io import BytesIO
 from src.ruby_loader import DataLoader
 
 class TileMap(Widget):
@@ -22,60 +26,66 @@ class TileMap(Widget):
         self.height = self.map.height * self.scale
 
         self.grid = True
-        self.coords = []
+        self.tiles = []
 
+        self.layers = []
         self.load_tiles()
-        self.draw_map_tiles()
-        self.draw_events()
+
+        self.create_map_layer()
+        self.create_event_layer()
+        self.draw_layers()
 
     def set_map_id(self, id):
         self.map = DataLoader().map(id)
         self.data = self.map.data
         self.load_tiles()
-        self.draw_map_tiles()
-        self.draw_events()
+
+        self.create_map_layer()
+        self.create_event_layer()
+        self.draw_layers()
 
     def set_scale(self, value):
         self.scale = value
-        self.draw_map_tiles()
-        self.draw_events()
+
+        self.create_map_layer()
+        self.create_event_layer()
+        self.draw_layers()
 
     def load_tiles(self):
         tileset = DataLoader().tileset(self.map.tileset_id)
         name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
-        texture = Image(source=name, mipmap = True).texture
+        texture = Image.open(name)
         
-        self.coords = []
+        self.tiles = []
         for y in range(texture.height // 32):
             for x in range(texture.width // 32):
-                u = 0
-                v = 32 / texture.height
-                if x > 0:
-                    u = (x * 32) / texture.width
-                if y > 0:
-                    v = (y * 32 + 32) / texture.height
-                w = 32 / texture.width 
-                h = -32 / texture.height
-                coords = u, v, u + w, v, u + w, v + h, u, v + h
-                self.coords.append(coords)
+                self.tiles.append(
+                    texture.crop((
+                        x * 32, y * 32,
+                        x * 32 + 32, y * 32 + 32
+                    ))
+                )
     
     def set_grid(self, value):
         if value == 'normal':
             self.grid = False
         else:
             self.grid = True
-        self.draw_map_tiles()
+
+        self.create_map_layer()
+        self.create_event_layer()
+        self.draw_layers()
     
-    def draw_map_tiles(self, *args):
+    def create_map_layer(self, *args):
         self.width = self.map.width * self.scale
         self.height = self.map.height * self.scale
         tileset = DataLoader().tileset(self.map.tileset_id)
-        grid_texture = Image(source='assets/tile_grid.png').texture
-        name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
-        tileset_texture = Image(source = name).texture
+        grid_texture = Image.open('assets/tile_grid.png')
+
+        self.layers = []
         if tileset.panorama_name.decode() != "":
             bg_name = f"Graphics/Panoramas/{tileset.panorama_name.decode()}.png"
-            bg_texture = Image(source=bg_name, mipmap = True).texture
+            bg_texture = kiImage(source=bg_name, mipmap = True).texture
 
             bg_texture.wrap = 'repeat'
             bg_texture.uvsize = (self.width / bg_texture.width, self.height / bg_texture.height)
@@ -91,34 +101,30 @@ class TileMap(Widget):
                 Color(1,1,1,1)
 
             for z in range(self.map.data.zsize):
+                layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
                 for y in range(self.map.height):
                     for x in range(self.map.width):
-                        tile = self.data.xyz(x,y,z)
-                        if tile > 384:
-                            coords = self.coords[tile - 384]
-                            Rectangle(
-                                texture = tileset_texture, 
-                                pos = (x * self.scale,-((y - self.map.height - 1) * self.scale + self.scale * 2)), 
-                                size = (self.scale, self.scale),
-                                tex_coords = coords
-                            )
+                        tile_id = self.data.xyz(x,y,z)
+                        if tile_id > 384:
+                            tile = self.tiles[tile_id - 384]
+                            layer.paste(tile, (x * 32, y * 32))
+                self.layers.append(layer)
+            
 
             if self.grid:
+                gridlayer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
                 for y in range(self.map.height):
                     for x in range(self.map.width):
-                        Rectangle(
-                            texture = grid_texture, 
-                            pos = (x * self.scale, -((y - self.map.height - 1) * self.scale + self.scale * 2)), 
-                            size = (self.scale, self.scale)
-                        )
+                        gridlayer.paste(grid_texture, (x * 32, y * 32))
+                self.layers.append(gridlayer)
 
-    def draw_events(self):
-        tileset = DataLoader().tileset(self.map.tileset_id)
-        name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
-        tileset_texture = Image(source = name).texture
 
+    def create_event_layer(self):
         events = self.map.events
-        blank_event_texture = Image(source='assets/event.png').texture
+        blank_event_texture = Image.open('assets/event.png')
+
+        event_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
+        box_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
         for id, event in events.items():
             graphic = event.pages[0].graphic
             try:
@@ -127,51 +133,42 @@ class TileMap(Widget):
                 name = graphic.character_name.text
 
             if name != "":
-                event_graphic = Image(source=f"Graphics/Characters/{graphic.character_name.decode()}.png").texture
-                with self.canvas:
-                    cw = event_graphic.width // 4 
-                    ch = event_graphic.height // 4
+                event_sheet = Image.open(f"Graphics/Characters/{graphic.character_name.decode()}.png")
 
-                    u = (cw * graphic.pattern) / event_graphic.width
-                    v = (ch / event_graphic.height)
-                    w = (cw / event_graphic.width)
-                    h = -(ch / event_graphic.height)
-                    coords = u, v, u + w, v, u + w, v + h, u, v + h
+                cw = event_sheet.width // 4
+                ch = event_sheet.height // 4
+                sx = cw * graphic.pattern
+                sy = (graphic.direction - 2) / 2 * ch
 
-                    #x, y = self.to_window(*self.pos)
-                    #ScissorPush(
-                    #    x = event.x * self.scale + x,
-                    #    y = event.y * self.scale + y,
-                    #    width = 32,
-                    #    height = 32
-                    #)
+                sprite = event_sheet.crop((
+                    sx, sy,
+                    sx + cw, sy + ch
+                ))
 
-                    Rectangle(
-                        texture = event_graphic,
-                        size = (cw * (self.scale / 32), ch * (self.scale / 32)),
-                        pos = ((event.x * self.scale) + 16 - (cw / 2), -((event.y - self.map.height - 1) * self.scale + self.scale * 2)),
-                        tex_coords = coords
-                    )
-
+                event_layer.paste(sprite, (event.x * 32 + 16 - cw // 2, event.y * 32 + 32 - ch), sprite.convert('RGBA'))
 
             elif graphic.tile_id != 0:
                 try:
-                    coords = self.coords[graphic.tile_id - 384]
+                    tile = self.tiles[graphic.tile_id - 384]
                 except IndexError:
-                    coords = self.coords[0]
-                with self.canvas:
-                    Rectangle(
-                        texture = tileset_texture, 
-                        pos = (event.x * self.scale,-((event.y - self.map.height - 1) * self.scale + self.scale * 2)), 
-                        size = (self.scale, self.scale),
-                        tex_coords = coords
-                    )
+                    tile = self.tiles[0]
+                event_layer.paste(tile, (event.x * 32, event.y * 32), tile.convert('RGBA'))
 
         for id, event in events.items():
+            box_layer.paste(blank_event_texture, (event.x * 32, event.y * 32))
+
+        self.layers.append(event_layer)
+        self.layers.append(box_layer)
+    
+    def draw_layers(self):
+        for layer in self.layers:
+            data = BytesIO()
+            layer.save(data, format='png')
+            data.seek(0)
+            texture = CoreImage(BytesIO(data.read()), ext='png').texture
             with self.canvas:
                 Rectangle(
-                    texture=blank_event_texture, 
-                    size = (self.scale, self.scale), 
-                    pos = (event.x * self.scale, -((event.y - self.map.height - 1) * self.scale + self.scale * 2))
+                    texture=texture,
+                    size=(self.width, self.height),
+                    pos=self.pos
                 )
-    
