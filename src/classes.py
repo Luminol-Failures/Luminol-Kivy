@@ -92,7 +92,7 @@ class Tileset(RubyObject):
     
     @property
     def fog_name(self):
-        return self.attributes['@fog_hue']
+        return self.attributes['@fog_name']
     
     @fog_name.setter
     def fog_name(self, value):
@@ -497,6 +497,7 @@ class EventGraphic(RubyObject):
             self.attributes = {
                 '@tile_id': 0,
                 '@character_name': "",
+                '@character_hue': 0,
                 '@direction': 2,
                 '@pattern': 0,
                 '@opacity': 255,
@@ -550,6 +551,14 @@ class EventGraphic(RubyObject):
     @blend_type.setter
     def blend_type(self, value):
         self.attributes['@blend_type'] = value
+
+    @property
+    def character_hue(self):
+        return self.attributes['@character_hue'] 
+
+    @character_hue.setter
+    def character_hue(self, value):
+        self.attributes['@character_hue'] = value
 
 class EventCommand(RubyObject):
     ruby_class_name = "RPG::EventCommand"

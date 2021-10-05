@@ -18,15 +18,7 @@ class MapList(TreeView):
         
 
     def order_mapinfos(self):
-        self.mapsinfos_sorted = {}
-        ord = 1
-        while True:
-            for key, value in self.mapinfos.items():
-                if value.order == ord:
-                    ord += 1
-                    self.mapinfos_sorted[key] = value
-            if len(self.mapinfos_sorted) + 1 == len(self.mapinfos):
-                break
+        self.mapinfos_sorted = dict(sorted(self.mapinfos.items(), key=lambda item: item[1].order))
     
     def load_mapinfos(self):
         self.nodes = {}
