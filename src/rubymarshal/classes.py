@@ -46,7 +46,12 @@ class RubyString(RubyObject):
         return False
 
     def __getattr__(self, item):
-        return getattr(self.text, item)
+        try:
+            return getattr(self.text, item)
+        except AttributeError:
+            if item != 'decode':
+                raise(AttributeError, 'dingus')
+            return self.__str__
 
     def __add__(self, other):
         return RubyString(self.text + str(other), self.attributes)

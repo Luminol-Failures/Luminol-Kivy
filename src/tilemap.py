@@ -77,7 +77,10 @@ class TileMap(Widget):
     def load_tiles(self):
         tileset = DataLoader().tileset(self.map.tileset_id)
         name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
-        texture = Image.open(name)
+        try:
+            texture = Image.open(name)
+        except FileNotFoundError:
+            texture = Image.open('assets/placeholder.png')
         
         self.tiles = []
         for y in range(texture.height // 32):
@@ -121,20 +124,20 @@ class TileMap(Widget):
 
 
     def create_event_layer(self):
-        events = self.map.events
+        events = dict(sorted(self.map.events.items(), key=lambda  item: item[1].y))
         blank_event_texture = Image.open('assets/event.png')
 
         event_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
         box_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
         for id, event in events.items():
             graphic = event.pages[0].graphic
-            try:
-                name = graphic.character_name.decode()
-            except AttributeError:
-                name = graphic.character_name.text
+            name = graphic.character_name.decode()
 
             if name != "":
-                event_sheet = Image.open(f"Graphics/Characters/{graphic.character_name.decode()}.png")
+                try:
+                    event_sheet = Image.open(f"Graphics/Characters/{graphic.character_name.decode()}.png")
+                except FileNotFoundError:
+                    event_sheet = Image.open('assets/placeholder.png')
 
                 cw = event_sheet.width // 4
                 ch = event_sheet.height // 4
@@ -150,7 +153,7 @@ class TileMap(Widget):
                 if graphic.character_hue != 0:
                     hue = wrapRange(graphic.character_hue, 0, 359)
                     arr = np.array(np.asarray(sprite).astype('float'))
-                    sprite = Image.fromarray(shift_hue(arr, hue / 360.).astype('uint8'), 'RGBA')
+                    sprite = Image.fromarray(shift_hue(arr, hue / 360).astype('uint8'), 'RGBA')
 
                 event_layer.paste(sprite, (event.x * 32 + 16 - cw // 2, event.y * 32 + 32 - ch), sprite)
 
@@ -159,7 +162,12 @@ class TileMap(Widget):
                     tile = self.tiles[graphic.tile_id - 384]
                 except IndexError:
                     tile = self.tiles[0]
-                event_layer.paste(tile, (event.x * 32, event.y * 32), tile.convert('RGBA'))
+                tile = tile.convert('RGBA')
+                if graphic.character_hue != 0:
+                    hue = wrapRange(graphic.character_hue, 0, 359)
+                    arr = np.array(np.asarray(tile).astype('float'))
+                    tile = Image.fromarray(shift_hue(arr, hue / 360).astype('uint8'), 'RGBA')
+                event_layer.paste(tile, (event.x * 32, event.y * 32), tile)
 
         for id, event in events.items():
             box_layer.paste(blank_event_texture, (event.x * 32, event.y * 32))
@@ -178,11 +186,11 @@ class TileMap(Widget):
 
                 bg_texture.wrap = 'repeat'
                 bg_texture.uvsize = (self.width / bg_texture.width, self.height / bg_texture.height)
-
+                bg_texture.flip_vertical()
             if tileset.panorama_name.decode() != "":
                 Rectangle(texture=bg_texture, size = (self.map.width * self.scale, self.map.height * self.scale), pos = self.pos)
             else:
-                Color(0.10, 0.10, 0.10)
+                Color(0.10, 0.10, 0.10, 1)
                 Rectangle(size = (self.map.width * self.scale, self.map.height * self.scale), pos = self.pos)
                 Color(1,1,1,1)
         
@@ -194,8 +202,9 @@ class TileMap(Widget):
 
                     fog_texture.wrap = 'repeat'
                     fog_texture.uvsize = (self.width / fog_texture.width, self.height / fog_texture.height)
+                    fog_texture.flip_vertical()
                     with self.canvas:
-                        Color(1, 1, 1,tileset.fog_opacity / 255)
+                        Color(1, 1, 1, tileset.fog_opacity / 255)
                         Rectangle(texture=fog_texture, size = (self.map.width * self.scale, self.map.height * self.scale), pos = self.pos)
                         Color(1, 1, 1, 1)
 

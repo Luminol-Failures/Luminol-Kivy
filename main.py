@@ -1,5 +1,4 @@
 import kivy
-from kivy_deps import sdl2, glew
 from kivy.app import App
 from kivy.core import window
 from kivy.uix.gridlayout import GridLayout
