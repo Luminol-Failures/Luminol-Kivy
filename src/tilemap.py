@@ -98,13 +98,17 @@ class TileMap(Widget):
                         tx = tile_num % 8 * 32
                         tile = texture.crop((tx, ty, tx + 32, ty + 32))
                         layer.paste(tile, (x * 32, y * 32))
-            self.layers[z] = layer
+
+            layer.save(f'temp/{z}_temp.png')
+            self.layers[z] = None
         
         gridlayer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
         for y in range(self.map.height):
             for x in range(self.map.width):
                 gridlayer.paste(grid_texture, (x * 32, y * 32))
-        self.layers['grid'] = gridlayer
+
+        gridlayer.save(f'temp/grid_temp.png')
+        self.layers['grid'] = None
 
 
     def create_event_layer(self):
@@ -171,13 +175,15 @@ class TileMap(Widget):
         for id, event in events.items():
             box_layer.paste(blank_event_texture, (event.x * 32, event.y * 32))
 
-        self.layers['events'] = event_layer
-        self.layers['box'] = box_layer
+        box_layer.save('temp/box_temp.png')
+        event_layer.save('temp/events_temp.png')
+        self.layers['events'] = None
+        self.layers['box'] = None
     
     def draw_layers(self):
         self.width = self.map.width * self.scale
         self.height = self.map.height * self.scale
-        
+
         self.canvas.clear()
 
         tileset = DataLoader().tileset(self.map.tileset_id)
@@ -191,10 +197,10 @@ class TileMap(Widget):
                     arr = np.array(np.asarray(bg_image).astype('float'))
                     bg_image = Image.fromarray(shift_hue(arr, hue / 360).astype('uint8'), 'RGBA')
                 
-                data = BytesIO()
-                bg_image.save(data, format='png')
-                data.seek(0)
-                bg_texture = CoreImage(BytesIO(data.read()), ext='png', mipmap = True).texture
+                bg_image.save('temp/bg_temp.png')
+                bg_image = kiImage(source='temp/bg_temp.png')
+                bg_image.reload()
+                bg_texture = bg_image.texture
 
                 bg_texture.wrap = 'repeat'
                 bg_texture.uvsize = (self.width / bg_texture.width, self.height / bg_texture.height)
@@ -207,40 +213,39 @@ class TileMap(Widget):
                 Color(1,1,1,1)
         
         for key, layer in self.layers.items():
-            if key == 'grid':
-                if tileset.fog_name.decode() != "":
-                    fog_name = f"Graphics/Fogs/{tileset.fog_name.decode()}.png"
-                    fog_image = Image.open(fog_name)
-
-                    if tileset.fog_hue != 0:
-                        hue = wrapRange(tileset.fog_hue, 0, 359)
-                        arr = np.array(np.asarray(fog_image).astype('float'))
-                        fog_image = Image.fromarray(shift_hue(arr, hue / 360).astype('uint8'), 'RGBA')
-
-                    data = BytesIO()
-                    fog_image.save(data, format='png')
-                    data.seek(0)
-                    fog_texture = CoreImage(BytesIO(data.read()), ext='png', mipmap = True).texture
-
-                    fog_texture.wrap = 'repeat'
-                    fog_texture.uvsize = (self.width / fog_texture.width, self.height / fog_texture.height)
-                    fog_texture.flip_vertical()
-                    with self.canvas:
-                        Color(1, 1, 1, tileset.fog_opacity / 255)
-                        Rectangle(texture=fog_texture, size = (self.map.width * self.scale, self.map.height * self.scale), pos = self.pos)
-                        Color(1, 1, 1, 1)
-
             if not(self.grid) and key == 'grid':
                 continue
 
-            data = BytesIO()
-            layer.save(data, format='png')
-            data.seek(0)
-            texture = CoreImage(BytesIO(data.read()), ext='png', mipmap = True).texture
+            image = kiImage(source=f'temp/{key}_temp.png')
+            image.reload()
+            texture = image.texture
+
             with self.canvas:
                 Rectangle(
                     texture=texture,
                     size=(self.map.width * self.scale, self.map.height * self.scale),
                     pos=self.pos
                 )
+
+        if tileset.fog_name.decode() != "":
+            fog_name = f"Graphics/Fogs/{tileset.fog_name.decode()}.png"
+            fog_image = Image.open(fog_name)
+
+            if tileset.fog_hue != 0:
+                hue = wrapRange(tileset.fog_hue, 0, 359)
+                arr = np.array(np.asarray(fog_image).astype('float'))
+                fog_image = Image.fromarray(shift_hue(arr, hue / 360).astype('uint8'), 'RGBA')
+
+            fog_image.save('temp/fog_temp.png')
+            fog_image = kiImage(source='temp/fog_temp.png')
+            fog_image.reload()
+            fog_texture = fog_image.texture
+
+            fog_texture.wrap = 'repeat'
+            fog_texture.uvsize = (self.width / fog_texture.width, self.height / fog_texture.height)
+            fog_texture.flip_vertical()
+            with self.canvas:
+                Color(1, 1, 1, tileset.fog_opacity / 255)
+                Rectangle(texture=fog_texture, size = (self.map.width * self.scale, self.map.height * self.scale), pos = self.pos)
+                Color(1, 1, 1, 1)
         
