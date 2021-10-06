@@ -103,6 +103,10 @@ class LuminolApp(App):
 
         def __init__(self, **kwargs):
             super().__init__(**kwargs)
+            current_directory = os.getcwd()
+            final_directory = os.path.join(current_directory, r'temp')
+            if not os.path.exists(final_directory):
+                os.makedirs(final_directory)
             self.layout = EditorLayout()
             Window.bind(on_resize=self.layout.resize)
             self.layout = self.layout
