@@ -49,10 +49,8 @@ class TileMap(Widget):
         self.height = self.map.height * self.scale
 
         self.grid = True
-        self.tiles = []
 
         self.layers = {}
-        self.load_tiles()
 
         self.create_map_layer()
         self.create_event_layer()
@@ -61,7 +59,6 @@ class TileMap(Widget):
     def set_map_id(self, id):
         self.map = DataLoader().map(id)
         self.data = self.map.data
-        self.load_tiles()
 
         self.create_map_layer()
         self.create_event_layer()
@@ -69,28 +66,7 @@ class TileMap(Widget):
 
     def set_scale(self, value):
         self.scale = value
-
-        self.create_map_layer()
-        self.create_event_layer()
         self.draw_layers()
-
-    def load_tiles(self):
-        tileset = DataLoader().tileset(self.map.tileset_id)
-        name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
-        try:
-            texture = Image.open(name)
-        except FileNotFoundError:
-            texture = Image.open('assets/placeholder.png')
-        
-        self.tiles = []
-        for y in range(texture.height // 32):
-            for x in range(texture.width // 32):
-                self.tiles.append(
-                    texture.crop((
-                        x * 32, y * 32,
-                        x * 32 + 32, y * 32 + 32
-                    ))
-                )
     
     def set_grid(self, value):
         if value == 'normal':
@@ -105,6 +81,10 @@ class TileMap(Widget):
         self.height = self.map.height * self.scale
         grid_texture = Image.open('assets/tile_grid.png')
 
+        tileset = DataLoader().tileset(self.map.tileset_id)
+        name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
+        texture = Image.open(name)
+
         self.layers = {}
         for z in range(self.map.data.zsize):
             layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
@@ -112,7 +92,10 @@ class TileMap(Widget):
                 for x in range(self.map.width):
                     tile_id = self.data.xyz(x,y,z)
                     if tile_id >= 384:
-                        tile = self.tiles[tile_id - 384]
+                        tile_num = tile_id - 384
+                        ty = tile_num // 8 * 32
+                        tx = tile_num % 8 * 32
+                        tile = texture.crop((tx, ty, tx + 32, ty + 32))
                         layer.paste(tile, (x * 32, y * 32))
             self.layers[z] = layer
         
@@ -126,6 +109,10 @@ class TileMap(Widget):
     def create_event_layer(self):
         events = dict(sorted(self.map.events.items(), key=lambda  item: item[1].y))
         blank_event_texture = Image.open('assets/event.png')
+
+        tileset = DataLoader().tileset(self.map.tileset_id)
+        name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
+        texture = Image.open(name)
 
         event_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
         box_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
@@ -158,11 +145,13 @@ class TileMap(Widget):
                 event_layer.paste(sprite, (event.x * 32 + 16 - cw // 2, event.y * 32 + 32 - ch), sprite)
 
             elif graphic.tile_id != 0:
-                try:
-                    tile = self.tiles[graphic.tile_id - 384]
-                except IndexError:
-                    tile = self.tiles[0]
+
+                tile_num = graphic.tile_id - 384
+                ty = tile_num // 8 * 32
+                tx = tile_num % 8 * 32
+                tile = texture.crop((tx, ty, tx + 32, ty + 32))
                 tile = tile.convert('RGBA')
+
                 if graphic.character_hue != 0:
                     hue = wrapRange(graphic.character_hue, 0, 359)
                     arr = np.array(np.asarray(tile).astype('float'))
