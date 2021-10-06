@@ -8,9 +8,7 @@ from kivy.graphics.scissor_instructions import ScissorPush, ScissorPop
 from kivy.uix.image import Image as kiImage
 from kivy.core.image import Image as CoreImage
 from PIL import Image, ImageDraw, ImageFont, ImageColor
-from io import BytesIO
 
-from numpy.lib.shape_base import tile
 from src.ruby_loader import DataLoader
 
 import numpy as np
@@ -96,6 +94,7 @@ class TileMap(Widget):
         texture = Image.open(name)
 
         self.layers = {}
+        loaded_tiles = {}
         for z in range(self.map.data.zsize):
             layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
             for y in range(self.map.height):
@@ -105,7 +104,11 @@ class TileMap(Widget):
                         tile_num = tile_id - 384
                         ty = tile_num // 8 * 32
                         tx = tile_num % 8 * 32
-                        tile = texture.crop((tx, ty, tx + 32, ty + 32))
+                        if tile_id in list(loaded_tiles.keys()):
+                            tile = loaded_tiles[tile_id]
+                        else:
+                            tile = texture.crop((tx, ty, tx + 32, ty + 32))
+                            loaded_tiles[tile_id] = tile
                         layer.paste(tile, (x * 32, y * 32))
 
             layer.save(f'temp/{z}_temp.png')
@@ -200,7 +203,10 @@ class TileMap(Widget):
         with self.canvas:
             if tileset.panorama_name.decode() != "":
                 bg_name = f"Graphics/Panoramas/{tileset.panorama_name.decode()}.png"
-                bg_image = Image.open(bg_name)
+                try:
+                    bg_image = Image.open(bg_name)
+                except FileNotFoundError:
+                    bg_image = Image.open('assets/placeholder.png')
 
                 if tileset.panorama_hue != 0:
                     hue = wrapRange(tileset.panorama_hue, 0, 359)
@@ -241,7 +247,10 @@ class TileMap(Widget):
 
         if tileset.fog_name.decode() != "":
             fog_name = f"Graphics/Fogs/{tileset.fog_name.decode()}.png"
-            fog_image = Image.open(fog_name)
+            try:
+                fog_image = Image.open(fog_name)
+            except FileNotFoundError:
+                fog_image = Image.open('assets/placeholder.png')
 
             if tileset.fog_hue != 0:
                 hue = wrapRange(tileset.fog_hue, 0, 359)
