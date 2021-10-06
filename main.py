@@ -38,13 +38,15 @@ class EditorLayout(GridLayout):
             ToggleButton(text='Scale: 1', font_size=14,  group = 'scale', state = 'down'),
             ToggleButton(text='Scale: 2', font_size=14,  group = 'scale'),
             ToggleButton(text='Scale: 3', font_size=14,  group = 'scale'),
-            ToggleButton(text='Show grid', font_size=14, state = 'down')
+            ToggleButton(text='Show grid', font_size=14, state = 'down'),
+            ToggleButton(text='Show event graphics', font_size=14, state = 'down')
         ]
 
         self.topbuttons[0].bind(on_press=self.scale_map_1)
         self.topbuttons[1].bind(on_press=self.scale_map_2)
         self.topbuttons[2].bind(on_press=self.scale_map_3)
         self.topbuttons[3].bind(state=self.grid)
+        self.topbuttons[4].bind(state=self.event_graphics)
 
         for b in self.topbuttons: top_buttons.add_widget(b)
         self.root.add_widget(self.tilemap)
@@ -80,6 +82,9 @@ class EditorLayout(GridLayout):
     
     def grid(self, instance, *args):
         self.tilemap.set_grid(instance.state)
+    
+    def event_graphics(self, instance, *args):
+        self.tilemap.set_event_graphic(instance.state)
 
     def resize(self, *args):
         self.root.height = Window.height - 40

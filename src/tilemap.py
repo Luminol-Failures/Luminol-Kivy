@@ -51,6 +51,7 @@ class TileMap(Widget):
         self.height = self.map.height * self.scale
 
         self.grid = True
+        self.event_graphic = True
 
         self.layers = {}
 
@@ -77,6 +78,14 @@ class TileMap(Widget):
         else:
             self.grid = True
 
+        self.draw_layers()
+    
+    def set_event_graphic(self, value):
+        if value == 'normal':
+            self.event_graphic = False
+        else:
+            self.event_graphic = True
+            self.create_event_layer()
         self.draw_layers()
     
     def create_map_layer(self, *args):
@@ -122,55 +131,56 @@ class TileMap(Widget):
         event_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
         box_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
 
-        graphics = {}
-        for id, event in events.items():
-            graphic = event.pages[0].graphic
-            name = graphic.character_name.decode()
-            if name in list(graphics.keys()):
-                continue
-            try:
-                graphics[name] = Image.open(f"Graphics/Characters/{graphic.character_name.decode()}.png")
-            except FileNotFoundError:
-               graphics[name] = Image.open('assets/placeholder.png')
+        if self.set_event_graphic:
+            graphics = {}
+            for id, event in events.items():
+                graphic = event.pages[0].graphic
+                name = graphic.character_name.decode()
+                if name in list(graphics.keys()):
+                    continue
+                try:
+                    graphics[name] = Image.open(f"Graphics/Characters/{graphic.character_name.decode()}.png")
+                except FileNotFoundError:
+                   graphics[name] = Image.open('assets/placeholder.png')
 
-        for id, event in events.items():
-            graphic = event.pages[0].graphic
-            name = graphic.character_name.decode()
+            for id, event in events.items():
+                graphic = event.pages[0].graphic
+                name = graphic.character_name.decode()
 
-            if name != "":
-                event_sheet = graphics[graphic.character_name.decode()]
+                if name != "":
+                    event_sheet = graphics[graphic.character_name.decode()]
 
-                cw = event_sheet.width // 4
-                ch = event_sheet.height // 4
-                sx = cw * graphic.pattern
-                sy = (graphic.direction - 2) / 2 * ch
+                    cw = event_sheet.width // 4
+                    ch = event_sheet.height // 4
+                    sx = cw * graphic.pattern
+                    sy = (graphic.direction - 2) / 2 * ch
 
-                sprite = event_sheet.crop((
-                    sx, sy,
-                    sx + cw, sy + ch
-                ))
+                    sprite = event_sheet.crop((
+                        sx, sy,
+                        sx + cw, sy + ch
+                    ))
 
-                sprite = sprite.convert('RGBA')
-                if graphic.character_hue != 0:
-                    hue = wrapRange(graphic.character_hue, 0, 359)
-                    arr = np.array(np.asarray(sprite).astype('float'))
-                    sprite = Image.fromarray(shift_hue(arr, hue / 360).astype('uint8'), 'RGBA')
+                    sprite = sprite.convert('RGBA')
+                    if graphic.character_hue != 0:
+                        hue = wrapRange(graphic.character_hue, 0, 359)
+                        arr = np.array(np.asarray(sprite).astype('float'))
+                        sprite = Image.fromarray(shift_hue(arr, hue / 360).astype('uint8'), 'RGBA')
 
-                event_layer.paste(sprite, (event.x * 32 + 16 - cw // 2, event.y * 32 + 32 - ch), sprite)
+                    event_layer.paste(sprite, (event.x * 32 + 16 - cw // 2, event.y * 32 + 32 - ch), sprite)
 
-            elif graphic.tile_id != 0:
+                elif graphic.tile_id != 0:
 
-                tile_num = graphic.tile_id - 384
-                ty = tile_num // 8 * 32
-                tx = tile_num % 8 * 32
-                tile = texture.crop((tx, ty, tx + 32, ty + 32))
-                tile = tile.convert('RGBA')
+                    tile_num = graphic.tile_id - 384
+                    ty = tile_num // 8 * 32
+                    tx = tile_num % 8 * 32
+                    tile = texture.crop((tx, ty, tx + 32, ty + 32))
+                    tile = tile.convert('RGBA')
 
-                if graphic.character_hue != 0:
-                    hue = wrapRange(graphic.character_hue, 0, 359)
-                    arr = np.array(np.asarray(tile).astype('float'))
-                    tile = Image.fromarray(shift_hue(arr, hue / 360).astype('uint8'), 'RGBA')
-                event_layer.paste(tile, (event.x * 32, event.y * 32), tile)
+                    if graphic.character_hue != 0:
+                        hue = wrapRange(graphic.character_hue, 0, 359)
+                        arr = np.array(np.asarray(tile).astype('float'))
+                        tile = Image.fromarray(shift_hue(arr, hue / 360).astype('uint8'), 'RGBA')
+                    event_layer.paste(tile, (event.x * 32, event.y * 32), tile)
 
         for id, event in events.items():
             box_layer.paste(blank_event_texture, (event.x * 32, event.y * 32))
@@ -214,6 +224,8 @@ class TileMap(Widget):
         
         for key, layer in self.layers.items():
             if not(self.grid) and key == 'grid':
+                continue
+            if not(self.event_graphic) and key == 'events':
                 continue
 
             image = kiImage(source=f'temp/{key}_temp.png')
