@@ -91,7 +91,10 @@ class TileMap(Widget):
 
         tileset = DataLoader().tileset(self.map.tileset_id)
         name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
-        texture = Image.open(name)
+        try:
+            texture = Image.open(name)
+        except FileNotFoundError:
+            texture = Image.open('assets/placeholder.png')
 
         self.layers = {}
         loaded_tiles = {}
@@ -129,7 +132,10 @@ class TileMap(Widget):
 
         tileset = DataLoader().tileset(self.map.tileset_id)
         name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
-        texture = Image.open(name)
+        try:
+            texture = Image.open(name)
+        except FileNotFoundError:
+            texture = Image.open('assets/placeholder.png')
 
         event_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
         box_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))

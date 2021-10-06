@@ -27,6 +27,8 @@ class TilePicker(Image):
         tileset = DataLoader().tileset(self.map.tileset_id)
         name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
         self.source = name
+        if self.texture == None:
+            self.source = 'assets/placeholder.png'
 
         self.width = self.texture.width
         self.height = self.texture.height
