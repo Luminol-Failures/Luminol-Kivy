@@ -139,6 +139,14 @@ class Tileset(RubyObject):
         self.attributes['@fog_sy'] = value
     
     @property
+    def fog_hue(self):
+        return self.attributes['@fog_hue']
+    
+    @fog_hue.setter
+    def fog_hue(self, value):
+        self.attributes['@fog_hue'] = value
+    
+    @property
     def battleback_name(self):
         return self.attributes['@battleback_name']
     

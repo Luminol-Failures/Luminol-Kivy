@@ -9,6 +9,8 @@ from kivy.uix.image import Image as kiImage
 from kivy.core.image import Image as CoreImage
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 from io import BytesIO
+
+from numpy.lib.shape_base import tile
 from src.ruby_loader import DataLoader
 
 import numpy as np
@@ -60,6 +62,7 @@ class TileMap(Widget):
         self.map = DataLoader().map(id)
         self.data = self.map.data
 
+        self.layers = {}
         self.create_map_layer()
         self.create_event_layer()
         self.draw_layers()
@@ -171,7 +174,17 @@ class TileMap(Widget):
         with self.canvas:
             if tileset.panorama_name.decode() != "":
                 bg_name = f"Graphics/Panoramas/{tileset.panorama_name.decode()}.png"
-                bg_texture = kiImage(source=bg_name).texture
+                bg_image = Image.open(bg_name)
+
+                if tileset.panorama_hue != 0:
+                    hue = wrapRange(tileset.panorama_hue, 0, 359)
+                    arr = np.array(np.asarray(bg_image).astype('float'))
+                    bg_image = Image.fromarray(shift_hue(arr, hue / 360).astype('uint8'), 'RGBA')
+                
+                data = BytesIO()
+                bg_image.save(data, format='png')
+                data.seek(0)
+                bg_texture = CoreImage(BytesIO(data.read()), ext='png').texture
 
                 bg_texture.wrap = 'repeat'
                 bg_texture.uvsize = (self.width / bg_texture.width, self.height / bg_texture.height)
@@ -187,7 +200,17 @@ class TileMap(Widget):
             if key == 'grid':
                 if tileset.fog_name.decode() != "":
                     fog_name = f"Graphics/Fogs/{tileset.fog_name.decode()}.png"
-                    fog_texture = kiImage(source=fog_name).texture
+                    fog_image = Image.open(fog_name)
+
+                    if tileset.fog_hue != 0:
+                        hue = wrapRange(tileset.fog_hue, 0, 359)
+                        arr = np.array(np.asarray(fog_image).astype('float'))
+                        fog_image = Image.fromarray(shift_hue(arr, hue / 360).astype('uint8'), 'RGBA')
+
+                    data = BytesIO()
+                    fog_image.save(data, format='png')
+                    data.seek(0)
+                    fog_texture = CoreImage(BytesIO(data.read()), ext='png').texture
 
                     fog_texture.wrap = 'repeat'
                     fog_texture.uvsize = (self.width / fog_texture.width, self.height / fog_texture.height)
@@ -207,7 +230,7 @@ class TileMap(Widget):
             with self.canvas:
                 Rectangle(
                     texture=texture,
-                    size=(self.width, self.height),
+                    size=(self.map.width * self.scale, self.map.height * self.scale),
                     pos=self.pos
                 )
         

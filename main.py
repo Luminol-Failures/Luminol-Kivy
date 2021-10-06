@@ -53,7 +53,7 @@ class EditorLayout(GridLayout):
         left_layout.add_widget(self.root)
         
         self.maplist = MapList()
-        self.maplist.bind(on_touch_down=self.on_map_select)
+        self.maplist.bind(on_touch_up=self.on_map_select)
         maplist_scroller = ScrollView(scroll_type = ['bars', 'content'], bar_width = 10)
         maplist_scroller.add_widget(self.maplist)
         maplist_splitter = Splitter(sizable_from = 'top')
