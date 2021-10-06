@@ -80,8 +80,6 @@ class TileMap(Widget):
         self.draw_layers()
     
     def create_map_layer(self, *args):
-        self.width = self.map.width * self.scale
-        self.height = self.map.height * self.scale
         grid_texture = Image.open('assets/tile_grid.png')
 
         tileset = DataLoader().tileset(self.map.tileset_id)
@@ -119,15 +117,24 @@ class TileMap(Widget):
 
         event_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
         box_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
+
+        graphics = {}
+        for id, event in events.items():
+            graphic = event.pages[0].graphic
+            name = graphic.character_name.decode()
+            if name in list(graphics.keys()):
+                continue
+            try:
+                graphics[name] = Image.open(f"Graphics/Characters/{graphic.character_name.decode()}.png")
+            except FileNotFoundError:
+               graphics[name] = Image.open('assets/placeholder.png')
+
         for id, event in events.items():
             graphic = event.pages[0].graphic
             name = graphic.character_name.decode()
 
             if name != "":
-                try:
-                    event_sheet = Image.open(f"Graphics/Characters/{graphic.character_name.decode()}.png")
-                except FileNotFoundError:
-                    event_sheet = Image.open('assets/placeholder.png')
+                event_sheet = graphics[graphic.character_name.decode()]
 
                 cw = event_sheet.width // 4
                 ch = event_sheet.height // 4
@@ -168,6 +175,9 @@ class TileMap(Widget):
         self.layers['box'] = box_layer
     
     def draw_layers(self):
+        self.width = self.map.width * self.scale
+        self.height = self.map.height * self.scale
+        
         self.canvas.clear()
 
         tileset = DataLoader().tileset(self.map.tileset_id)
@@ -184,7 +194,7 @@ class TileMap(Widget):
                 data = BytesIO()
                 bg_image.save(data, format='png')
                 data.seek(0)
-                bg_texture = CoreImage(BytesIO(data.read()), ext='png').texture
+                bg_texture = CoreImage(BytesIO(data.read()), ext='png', mipmap = True).texture
 
                 bg_texture.wrap = 'repeat'
                 bg_texture.uvsize = (self.width / bg_texture.width, self.height / bg_texture.height)
@@ -210,7 +220,7 @@ class TileMap(Widget):
                     data = BytesIO()
                     fog_image.save(data, format='png')
                     data.seek(0)
-                    fog_texture = CoreImage(BytesIO(data.read()), ext='png').texture
+                    fog_texture = CoreImage(BytesIO(data.read()), ext='png', mipmap = True).texture
 
                     fog_texture.wrap = 'repeat'
                     fog_texture.uvsize = (self.width / fog_texture.width, self.height / fog_texture.height)
@@ -226,7 +236,7 @@ class TileMap(Widget):
             data = BytesIO()
             layer.save(data, format='png')
             data.seek(0)
-            texture = CoreImage(BytesIO(data.read()), ext='png').texture
+            texture = CoreImage(BytesIO(data.read()), ext='png', mipmap = True).texture
             with self.canvas:
                 Rectangle(
                     texture=texture,
