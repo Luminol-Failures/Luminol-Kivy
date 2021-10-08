@@ -50,6 +50,7 @@ class TileMap(Widget):
 
         self.grid = True
         self.event_graphic = True
+        self.boxes = True
         self.tileset = DataLoader().tileset(self.map.tileset_id)
 
         self.layers = {}
@@ -87,6 +88,14 @@ class TileMap(Widget):
             self.event_graphic = True
             self.create_event_layer()
         self.draw_layers()
+    
+    def set_boxes(self, value):
+        if value == 'normal':
+            self.boxes = False
+        else:
+            self.boxes = True
+        self.draw_layers()
+
     
     def load_autotiles(self):
         autotile_names = self.tileset.autotile_names
@@ -482,6 +491,8 @@ class TileMap(Widget):
             if not(self.grid) and key == 'grid':
                 continue
             if not(self.event_graphic) and key == 'events':
+                continue
+            if not(self.boxes) and key == "box":
                 continue
 
             image = kiImage(source=f'temp/{key}_temp.png')
