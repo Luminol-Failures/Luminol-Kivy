@@ -32,12 +32,12 @@ For starters, you will need to have Python (3.7-3.9) and pip installed.
 
 Every time you want to launch Luminol you will need to activate the virtual environment.
 
-4. `.\kivy_venv\Scripts\activate` (windows) `source kivy_venv/bin/activate` (linux)
+`.\kivy_venv\Scripts\activate` (windows) `source kivy_venv/bin/activate` (linux)
 
-5. Install kivy.
+4. Install kivy.
 
 `python -m pip install kivy[full]`
 
-6. Launch Luminol!
+5. Launch Luminol!
 
 `python main.py`
