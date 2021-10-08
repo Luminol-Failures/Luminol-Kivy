@@ -7,14 +7,11 @@ Luminol is intended to be used with **mkxp**. It may not work with the standard 
 If you are modding OneShot, you do NOT need to worry about this as OneShot uses mkxp.
 
 ## Dependencies
-Luminol is using:
-- [Kivy](https://pypi.org/project/Kivy/) for Innovative User Interface.
-- [Python Imaging Library](https://pypi.org/project/Pillow/) for render Tilesets, Event sprites and more.
-- [Ruby Marshal Module](https://pypi.org/project/rubymarshal/) for parsing Ruby Marshalled objects and more. *(integrated into Luminol)*
-- [NumPy](https://pypi.org/project/numpy/) for array computing.
+Luminol uses:
+- [Kivy](https://pypi.org/project/Kivy/) for it's GUI.
+- [Python Imaging Library](https://pypi.org/project/Pillow/) for rendering maps and sprites.
+- [Ruby Marshal Module](https://pypi.org/project/rubymarshal/) for loading .rxdata. *(integrated into Luminol)*
+- [NumPy](https://pypi.org/project/numpy/) for speedy array manipulation.
 
 ## Installation
-For install Python dependencies:
-```
-$ pip install -Ur requirements.txt
-```
+Something to do with venv I've not worked it out yet
