@@ -8,7 +8,7 @@ If you are modding OneShot, you do NOT need to worry about this as OneShot uses 
 
 ## Dependencies
 Luminol uses:
-- [Kivy](https://pypi.org/project/Kivy/) for it's GUI.
+- [Kivy](https://pypi.org/project/Kivy/) for its GUI.
 - [Python Imaging Library](https://pypi.org/project/Pillow/) for rendering maps and sprites.
 - [Ruby Marshal Module](https://pypi.org/project/rubymarshal/) for loading .rxdata. *(integrated into Luminol)*
 - [NumPy](https://pypi.org/project/numpy/) for speedy array manipulation.
