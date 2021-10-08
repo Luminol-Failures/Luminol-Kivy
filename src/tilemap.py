@@ -326,6 +326,7 @@ class TileMap(Widget):
                     bg_image = Image.open(bg_name)
                 except FileNotFoundError:
                     bg_image = Image.open('assets/placeholder.png')
+                bg_image = bg_image.convert('RGBA')
 
                 if self.tileset.panorama_hue != 0:
                     hue = wrapRange(self.tileset.panorama_hue, 0, 359)
@@ -372,6 +373,7 @@ class TileMap(Widget):
                 fog_image = Image.open(fog_name)
             except FileNotFoundError:
                 fog_image = Image.open('assets/placeholder.png')
+            fog_image = fog_image.convert('RGBA')
 
             if self.tileset.fog_hue != 0:
                 hue = wrapRange(self.tileset.fog_hue, 0, 359)
