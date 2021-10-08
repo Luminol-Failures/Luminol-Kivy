@@ -14,6 +14,57 @@ from src.ruby_loader import DataLoader
 import numpy as np
 import colorsys
 
+autotile_config = [
+    [26, 27, 32, 33],
+    [4, 27, 32, 33],
+    [26, 5, 32, 33],
+    [4, 5, 32, 33],
+    [26, 27, 32, 11],
+    [4, 27, 32, 11],
+    [26, 5, 32, 11],
+    [4, 5, 32, 11],
+    [26, 27, 10, 33],
+    [4, 27, 10, 33],
+    [26, 5, 10, 33],
+    [4, 5, 10, 33],
+    [26, 27, 10, 11],
+    [4, 27, 10, 11],
+    [26, 5, 10, 11],
+    [4, 5, 10, 11],
+    [24, 25, 30, 31],
+    [24, 5, 30, 31],
+    [24, 25, 30, 11],
+    [24, 5, 30, 11],
+    [14, 15, 20, 21],
+    [14, 15, 20, 11],
+    [14, 15, 10, 21],
+    [14, 15, 10, 11],
+    [28, 29, 34, 35],
+    [28, 29, 10, 35],
+    [4, 29, 34, 35],
+    [4, 29, 10, 35],
+    [38, 39, 44, 45],
+    [4, 39, 44, 45],
+    [38, 5, 44, 45],
+    [4, 5, 44, 45],
+    [24, 29, 30, 35],
+    [14, 15, 44, 45],
+    [12, 13, 18, 19],
+    [12, 13, 18, 11],
+    [16, 17, 22, 23],
+    [16, 17, 10, 23],
+    [40, 41, 46, 47],
+    [4, 41, 46, 47],
+    [36, 37, 42, 43],
+    [36, 5, 42, 43],
+    [12, 17, 18, 23],
+    [12, 13, 42, 43],
+    [36, 41, 42, 47],
+    [16, 17, 46, 47],
+    [12, 17, 42, 47],
+    [0, 1, 6, 7]
+]
+
 rgb_to_hsv = np.vectorize(colorsys.rgb_to_hsv)
 hsv_to_rgb = np.vectorize(colorsys.hsv_to_rgb)
 
@@ -128,200 +179,9 @@ class TileMap(Widget):
                         )))
                         t += 1
                 for i in range(48):
-                    if i == 0: # 1
-                        tile = self.create_autotile(
-                            corners, 26, 27, 32, 33
-                        )
-                    elif i == 1: # 2
-                        tile = self.create_autotile(
-                            corners, 4, 27, 32, 33
-                        )
-                    elif i == 2: # 3
-                        tile = self.create_autotile(
-                            corners, 26, 5, 32, 33
-                        )
-                    elif i == 3: # 4
-                        tile = self.create_autotile(
-                            corners, 4, 5, 32, 33
-                        )
-                    elif i == 4: # 5
-                        tile = self.create_autotile(
-                            corners, 26, 27, 32, 11
-                        )
-                    elif i == 5: # 6
-                        tile = self.create_autotile(
-                            corners, 4, 27, 32, 11
-                        )
-                    elif i == 6: # 7
-                        tile = self.create_autotile(
-                            corners, 26, 5, 32, 11
-                        )
-                    elif i == 7: # 8
-                        tile = self.create_autotile(
-                            corners, 4, 5, 32, 11
-                        )
-                    elif i == 8:
-                        tile = self.create_autotile(
-                            corners, 26, 27, 10, 33
-                        )
-                    elif i == 9:
-                        tile = self.create_autotile(
-                            corners, 4, 27, 10, 33
-                        )
-                    elif i == 10:
-                        tile = self.create_autotile(
-                            corners, 26, 5, 10, 33
-                        )
-                    elif i == 11:
-                        tile = self.create_autotile(
-                            corners, 4, 5, 10, 33
-                        )
-                    elif i == 12:
-                        tile = self.create_autotile(
-                            corners, 26, 27, 10, 11
-                        )
-                    elif i == 13:
-                        tile = self.create_autotile(
-                            corners, 4, 27, 10, 11
-                        )
-                    elif i == 14:
-                        tile = self.create_autotile(
-                            corners, 26, 5, 10, 11
-                        )
-                    elif i == 15:
-                        tile = self.create_autotile(
-                            corners, 4, 5, 10, 11
-                        )
-                    elif i == 16:
-                        tile = self.create_autotile(
-                            corners, 24, 25, 30, 31
-                        )
-                    elif i == 17:
-                        tile = self.create_autotile(
-                            corners, 24, 5, 30, 31
-                        )
-                    elif i == 18:
-                        tile = self.create_autotile(
-                            corners, 24, 25, 30, 11
-                        )
-                    elif i == 19:
-                        tile = self.create_autotile(
-                            corners, 24, 5, 30, 11
-                        )
-                    elif i == 20:
-                        tile = self.create_autotile(
-                            corners, 14, 15, 20, 21
-                        )
-                    elif i == 21:
-                        tile = self.create_autotile(
-                            corners, 14, 15, 20, 11
-                        )
-                    elif i == 22:
-                        tile = self.create_autotile(
-                            corners, 14, 15, 10, 21
-                        )
-                    elif i == 23:
-                        tile = self.create_autotile(
-                            corners, 14, 15, 10, 11
-                        )
-                    elif i == 24:
-                        tile = self.create_autotile(
-                            corners, 28, 29, 34, 35
-                        )
-                    elif i == 25:
-                        tile = self.create_autotile(
-                            corners, 28, 29, 10, 35
-                        )
-                    elif i == 26:
-                        tile = self.create_autotile(
-                            corners, 4, 29, 34, 35
-                        )
-                    elif i == 27:
-                        tile = self.create_autotile(
-                            corners, 4, 29, 10, 35
-                        )
-                    elif i == 28:
-                        tile = self.create_autotile(
-                            corners, 38, 39, 44, 45
-                        )
-                    elif i == 29:
-                        tile = self.create_autotile(
-                            corners, 4, 39, 44, 45
-                        )
-                    elif i == 30:
-                        tile = self.create_autotile(
-                            corners, 38, 5, 44, 45
-                        )
-                    elif i == 31:
-                        tile = self.create_autotile(
-                            corners, 4, 5, 44, 45
-                        )
-                    elif i == 32:
-                        tile = self.create_autotile(
-                            corners, 24, 29, 30, 35
-                        )
-                    elif i == 33:
-                        tile = self.create_autotile(
-                            corners, 14, 15, 44, 45
-                        )
-                    elif i == 34:
-                        tile = self.create_autotile(
-                            corners, 12, 13, 18, 19
-                        )
-                    elif i == 35:
-                        tile = self.create_autotile(
-                            corners, 12, 13, 18, 11
-                        )
-                    elif i == 36:
-                        tile = self.create_autotile(
-                            corners, 16, 17, 22, 23
-                        )
-                    elif i == 37:
-                        tile = self.create_autotile(
-                            corners, 16, 17, 10, 23
-                        )
-                    elif i == 38:
-                        tile = self.create_autotile(
-                            corners, 40, 41, 46, 47
-                        )
-                    elif i == 39:
-                        tile = self.create_autotile(
-                            corners, 4, 41, 46, 47
-                        )
-                    elif i == 40:
-                        tile = self.create_autotile(
-                            corners, 36, 37, 42, 43
-                        )
-                    elif i == 41:
-                        tile = self.create_autotile(
-                            corners, 36, 5, 42, 43
-                        )
-                    elif i == 42:
-                        tile = self.create_autotile(
-                            corners, 12, 17, 18, 23
-                        )
-                    elif i == 43:
-                        tile = self.create_autotile(
-                            corners, 12, 13, 42, 43
-                        )
-                    elif i == 44:
-                        tile = self.create_autotile(
-                            corners, 36, 41, 42, 47
-                        )
-                    elif i == 45:
-                        tile = self.create_autotile(
-                            corners, 16, 17, 46, 47
-                        )
-                    elif i == 46:
-                        tile = self.create_autotile(
-                            corners, 12, 17, 42, 47
-                        )
-                    elif i == 47:
-                        tile = self.create_autotile(
-                            corners, 0, 1, 6, 7
-                        )
-
-
+                    tile = self.create_autotile(
+                        corners, *autotile_config[i]
+                    )
                     autotile_list.append(tile)
             t = 0
             for tile in autotile_list:
