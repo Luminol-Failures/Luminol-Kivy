@@ -6,6 +6,7 @@ from kivy.uix.boxlayout import BoxLayout
 from src.tilemap import TileMap
 from src.mapinfo import MapList
 from src.tilepicker import TilePicker
+from src.rightbar import RightBar
 from kivy.uix.scrollview import ScrollView
 from kivy.effects.scroll import ScrollEffect
 from kivy.core.window import Window
@@ -19,7 +20,7 @@ class EditorLayout(GridLayout):
     def __init__(self, **kwargs):
         super(EditorLayout, self).__init__(**kwargs)
 
-        self.cols = 2
+        self.cols = 3
 
         self.map_id = 1
 
@@ -67,9 +68,14 @@ class EditorLayout(GridLayout):
         mappicker_scroller.add_widget(self.tilepicker)
         right_box.add_widget(mappicker_scroller)
         right_box.add_widget(maplist_splitter)
+
+        self.rightbar = RightBar()
+        rightbar_splitter = Splitter(sizable_from = 'left', min_size = 15, max_size = 270)
+        rightbar_splitter.add_widget(self.rightbar)
         
         self.add_widget(right_layout)
         self.add_widget(left_layout)
+        self.add_widget(rightbar_splitter)
         
         self.on_map_select()
     
