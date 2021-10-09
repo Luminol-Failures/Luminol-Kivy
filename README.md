@@ -19,7 +19,8 @@ Luminol uses:
 
 ## Installation
 
-The installation process *mostly* follows the [Kivy installation docs](https://kivy.org/doc/stable/gettingstarted/installation.html).  
+The installation process *mostly* follows the [Kivy installation docs](https://kivy.org/doc/stable/gettingstarted/installation.html).
+
 For starters, you will need to have Python (3.7-3.9) and pip installed.
 
 1. In a new terminal, ensure you have the latest versions of pip, setuptools & virtualenv.
