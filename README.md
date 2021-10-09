@@ -43,8 +43,8 @@ or
 
 ## Usage
 
-To Launch Luminol, make sure you have first activated the virtual enviornment using
-`.\kivy_venv\Scripts\activate`  (Windows)
+To Launch Luminol, make sure you have first activated the virtual enviornment using  
+`.\kivy_venv\Scripts\activate`  (Windows)  
 `source kivy_venv/bin/activate` (Linux)
 
 Then, run `python main.py`
