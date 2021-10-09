@@ -10,6 +10,7 @@ from kivy.core.image import Image as CoreImage
 from PIL import Image, ImageDraw, ImageFont, ImageColor
 
 from src.ruby_loader import DataLoader
+import src.config
 
 import numpy as np
 import colorsys
@@ -200,13 +201,13 @@ class TileMap(Widget):
     
     def create_map_layer(self, *args):
         self.load_autotiles()
-        grid_texture = Image.open('assets/tile_grid.png')
+        grid_texture = Image.open(src.config.luminol_dir + '/assets/tile_grid.png')
 
         name = f"Graphics/Tilesets/{self.tileset.tileset_name.decode()}.png"
         try:
             texture = Image.open(name)
         except FileNotFoundError:
-            texture = Image.open('assets/placeholder.png')
+            texture = Image.open(src.config.luminol_dir + '/assets/placeholder.png')
 
         self.layers = {}
         loaded_tiles = {}
@@ -243,13 +244,13 @@ class TileMap(Widget):
 
     def create_event_layer(self):
         events = dict(sorted(self.map.events.items(), key=lambda  item: item[1].y))
-        blank_event_texture = Image.open('assets/event.png')
+        blank_event_texture = Image.open(src.config.luminol_dir + '/assets/event.png')
 
         name = f"Graphics/Tilesets/{self.tileset.tileset_name.decode()}.png"
         try:
             texture = Image.open(name)
         except FileNotFoundError:
-            texture = Image.open('assets/placeholder.png')
+            texture = Image.open(src.config.luminol_dir + '/assets/placeholder.png')
 
         event_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
         box_layer = Image.new('RGBA', (self.map.width * 32, self.map.height * 32))
@@ -264,7 +265,7 @@ class TileMap(Widget):
                 try:
                     graphics[name] = Image.open(f"Graphics/Characters/{graphic.character_name.decode()}.png")
                 except FileNotFoundError:
-                   graphics[name] = Image.open('assets/placeholder.png')
+                   graphics[name] = Image.open(src.config.luminol_dir + '/assets/placeholder.png')
 
             for id, event in events.items():
                 graphic = event.pages[0].graphic
@@ -325,7 +326,7 @@ class TileMap(Widget):
                 try:
                     bg_image = Image.open(bg_name)
                 except FileNotFoundError:
-                    bg_image = Image.open('assets/placeholder.png')
+                    bg_image = Image.open(src.config.luminol_dir + '/assets/placeholder.png')
                 bg_image = bg_image.convert('RGBA')
 
                 if self.tileset.panorama_hue != 0:
@@ -372,7 +373,7 @@ class TileMap(Widget):
             try:
                 fog_image = Image.open(fog_name)
             except FileNotFoundError:
-                fog_image = Image.open('assets/placeholder.png')
+                fog_image = Image.open(src.config.luminol_dir + '/assets/placeholder.png')
             fog_image = fog_image.convert('RGBA')
 
             if self.tileset.fog_hue != 0:

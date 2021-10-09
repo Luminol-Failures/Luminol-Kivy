@@ -8,6 +8,7 @@ from kivy.resources import resource_add_path, resource_find
 
 from src.leftlayout import LeftLayout
 from src.centerlayout import CenterLayout
+import src.config
 
 class EditorLayout(GridLayout):
 
@@ -76,4 +77,17 @@ class LuminolApp(App):
 if __name__ == '__main__':
     if hasattr(sys, '_MEIPASS'):
         resource_add_path(os.path.join(sys._MEIPASS))
+
+    # External working directory handling
+    if(len(sys.argv) >= 2):
+        working_dir = os.getcwd()
+        try:
+            working_dir = sys.argv[1]
+            if not os.path.exists(working_dir):
+                raise AssertionError('Path does not exist')
+            src.config.luminol_dir = os.getcwd()
+        except:
+            raise AssertionError('Invalid working directory')
+        os.chdir(working_dir)
+
     LuminolApp().run()

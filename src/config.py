@@ -1,12 +1,14 @@
 import json
 
+luminol_dir = "."
+
 class Config():
     def __init__(self):
         self.load_config()
         pass
 
     def load_config(self):
-        with open("config.json") as f:
+        with open(luminol_dir + "/config.json") as f:
             self.data = json.load(f)
 
     def code_config(self, code):
