@@ -23,22 +23,22 @@ The installation process *mostly* follows the [Kivy installation docs](https://k
 
 For starters, you will need to have Python (3.7-3.9) and pip installed.
 
-1. In a new terminal, ensure you have the latest versions of pip, setuptools & virtualenv.
+1. In a new terminal, ensure you have the latest versions of pip, setuptools & virtualenv.  
 `python -m pip install --upgrade pip setuptools virtualenv`
 
-2. Clone Luminol (somewhere.)
-`git clone https://github.com/Speak2Erase/Luminol/` (https)
-or
-`git clone git@github.com:Speak2Erase/Luminol` (ssh)
+2. Clone Luminol (somewhere.)  
+`git clone https://github.com/Speak2Erase/Luminol/` (https)  
+or  
+`git clone git@github.com:Speak2Erase/Luminol` (ssh)  
 
-3. CD into wherever you cloned Luminol and setup the virtual environment.
+3. CD into wherever you cloned Luminol and setup the virtual environment.  
 `python -m virtualenv kivy_venv`
 
-4. Activate virtual enviornment. You will also need to do this every time you run Luminol.
-`.\kivy_venv\Scripts\activate`  (Windows)
-`source kivy_venv/bin/activate` (Linux)  
+4. Activate virtual enviornment. You will also need to do this every time you run Luminol.  
+`.\kivy_venv\Scripts\activate`  (Windows)  
+`source kivy_venv/bin/activate` (Linux)
 
-5. Install requirements.
+5. Install requirements.  
 `python -m pip install -r requirements.txt`
 
 To Launch Luminol, make sure you have first activated the virtual enviornment using  
