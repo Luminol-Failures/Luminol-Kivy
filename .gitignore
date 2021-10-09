@@ -59,3 +59,8 @@ Build
 *.pyc
 assets/*_temp.png
 temp/*_temp.png
+
+# IDE
+.vs/
+.vscode/
+.idea/
