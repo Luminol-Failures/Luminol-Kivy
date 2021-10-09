@@ -45,3 +45,7 @@ To Launch Luminol, make sure you have first activated the virtual enviornment us
 `source kivy_venv/bin/activate` (Linux)
 
 Then, run `python main.py`
+
+## Usage
+
+When using Luminol, you should have the `Data` and `Graphics` folders from your source project in the root folder of Luminol.
