@@ -4,6 +4,8 @@ from src.ruby_loader import DataLoader
 from kivy.graphics import (
     RenderContext, BindTexture, Rectangle, Color
 )
+import src.config
+
 class TilePicker(Image):
     def __init__(self, id = 1, **kwargs):
         super(TilePicker, self).__init__(**kwargs)
@@ -28,7 +30,7 @@ class TilePicker(Image):
         name = f"Graphics/Tilesets/{tileset.tileset_name.decode()}.png"
         self.source = name
         if self.texture == None:
-            self.source = 'assets/placeholder.png'
+            self.source = src.config.luminol_dir + '/assets/placeholder.png'
 
         self.width = self.texture.width
         self.height = self.texture.height
