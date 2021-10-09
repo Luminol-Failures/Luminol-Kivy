@@ -49,4 +49,4 @@ Then, run `python main.py`
 
 ## Usage
 
-When using Luminol, you should have the `Data` and `Graphics` folders from your source project in the root folder of Luminol.
+When using Luminol, you should have the `Data` and `Graphics` folders from your mkxp project in the root folder of Luminol.
