@@ -1,4 +1,4 @@
-# Luminol
+# Luminol-Kivy
 Luminol is a family of editors designed to open source RPG Maker XP's editor. You are currently looking at Luminol-Kivy, the main version of Luminol, written in Python and made with Kivy. [Luminol-FXRuby](https://github.com/Speak2Erase/Luminol-FXRuby), the secondary version of Luminol, is a "fork" of Luminol written in ruby and made with FXRuby.
 
 ## Why kivy?
