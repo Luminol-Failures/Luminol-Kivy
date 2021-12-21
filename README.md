@@ -57,6 +57,6 @@ There are 2 ways to load mkxp projects in Luminol: Locally or Externally.
 This mode requires you to have the `Data` and `Graphics` folders inside the root folder of Luminol.  
 
 ### Externally 
-This mode allows you to open mkxp projects from folders other than the root folder of Luminol.  
-To use this mode, you must specify the directory as an arguement when running `main.py`  
+This mode allows you to open rmxp projects from folders other than the root folder of Luminol.  
+To use this mode, you must specify the directory as an argument when running `main.py`  
 `python main.py "C:/Games/OneShot"` for example.
