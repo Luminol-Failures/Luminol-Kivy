@@ -105,11 +105,46 @@ class TileMap(Widget):
         self.boxes = True
         self.tileset = DataLoader().tileset(self.map.tileset_id)
 
+        self.cursor_x = 0
+        self.cursor_y = 0
+
+        cursor = kiImage(source=src.config.luminol_dir +'/assets/cursor.png')
+        texture = cursor.texture
+        with self.canvas.after:
+            self.cursor = Rectangle(
+                texture=texture,
+                size=(self.scale, self.scale),
+                pos=(self.cursor_x * self.scale, (self.map.height - self.cursor_y + 1) * self.scale),
+            )
+
+        self.set_cursor(20, 0)
+
         self.layers = {}
         self.autotiles = {}
         self.create_map_layer()
         self.create_event_layer()
         self.draw_layers()
+
+    def on_touch_down(self, touch):
+       if self.collide_point(*touch.pos):
+            x = touch.pos[0] // self.scale
+            y = self.map.height - (touch.pos[1] // self.scale) + 1
+            if self.cursor_x == x and self.cursor_y == y:
+                print('cursor')
+            else:
+                self.set_cursor(x, y)
+    
+    def set_cursor(self, x, y):
+        self.cursor_x = x
+        self.cursor_y = y
+
+        with self.canvas.after:
+            self.canvas.after.clear()
+            self.cursor = Rectangle(
+                texture=self.cursor.texture,
+                size=(self.scale, self.scale),
+                pos=(self.cursor_x * self.scale, (self.map.height - self.cursor_y + 1) * self.scale),
+            )
 
     def set_map_id(self, id):
         self.map = DataLoader().map(id)
