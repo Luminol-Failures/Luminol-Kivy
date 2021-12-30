@@ -8,6 +8,7 @@ from kivy.resources import resource_add_path, resource_find
 
 from src.leftlayout import LeftLayout
 from src.centerlayout import CenterLayout
+from src.rightlayout import RightLayout
 import src.config
 
 class EditorLayout(GridLayout):
@@ -15,15 +16,17 @@ class EditorLayout(GridLayout):
     def __init__(self, **kwargs):
         super(EditorLayout, self).__init__(**kwargs)
 
-        self.cols = 2
+        self.cols = 3
 
         self.map_id = 1
         
         self.center_layout = CenterLayout(self)
         self.left_layout = LeftLayout(self)
+        self.right_layout = RightLayout(self)
 
         self.add_widget(self.left_layout)
         self.add_widget(self.center_layout)
+        self.add_widget(self.right_layout)
         
         self.on_map_select()
     

@@ -36,13 +36,18 @@ class MapList(TreeView):
             
             if value.expanded:
                 self.toggle_node(self.nodes[key])
+        
         self.select_node(self.nodes[list(self.mapinfos_sorted.keys())[0]])
         self.set_height()
     
     def set_height(self, *args):
-        self.height = 28
-        for node in self.iterate_open_nodes():
-            self.height += 28
+        min_width = min_height = 0
+        for count, node in enumerate(self.iterate_open_nodes(self.root)):
+            node.odd = False if count % 2 else True
+            min_width = max(min_width, node.right - self.x)
+            min_height += node.height
+        self.width = min_width
+        self.height = min_height
         
     def get_selected_map(self):
         selected_node = self.selected_node
