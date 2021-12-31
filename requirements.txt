@@ -1,4 +1,5 @@
 Kivy[full]>=2.0.0
+KivyMD>=0.104.2
 Pillow>=8.3.2
 numpy>=1.21.2
 Cython>=0.29.24

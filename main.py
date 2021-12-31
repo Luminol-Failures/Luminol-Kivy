@@ -1,6 +1,9 @@
 import kivy
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
+from kivy.config import Config as kvConfig
+kvConfig.set('graphics', 'width', '1600')
+kvConfig.set('graphics', 'height', '900')
 
 from kivy.core.window import Window
 import os, sys
@@ -22,11 +25,9 @@ class EditorLayout(GridLayout):
         
         self.center_layout = CenterLayout(self)
         self.left_layout = LeftLayout(self)
-        self.right_layout = RightLayout(self)
 
         self.add_widget(self.left_layout)
         self.add_widget(self.center_layout)
-        self.add_widget(self.right_layout)
         
         self.on_map_select()
     
@@ -71,6 +72,7 @@ class LuminolApp(App):
                 os.makedirs(final_directory)
             self.layout = EditorLayout()
             Window.bind(on_resize=self.layout.resize)
+            Window.set_icon("assets/icon.png")
             self.layout = self.layout
 
         def build(self):
